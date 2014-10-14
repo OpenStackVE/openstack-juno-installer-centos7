@@ -1,0 +1,13 @@
+0.0.2.beta.el7 - 13-Oct-2014
+- Segundo beta basado en JUNO (RC1/B3)
+- Se desactiva SELINUX por bugs encontrados
+  en NOVA-API y cuando se usa como backend
+  de Base de Datos PostgreSQL
+- Mejoras en módulos de trove y swift
+
+0.0.1.beta.el7 - 12-Oct-2014
+- Primer beta basado para JUNO (RC1/B3)
+- Se cambian las imágenes de Cirros por la
+  versión 0.3.3
+- Modificaciones generales para adaptar el
+  instalador a JUNO

@@ -1,0 +1,61 @@
+NOTAS IMPORTANTES !!
+
+Asegurese de tener conocimientos de los siguientes temas:
+
+- Administración de Linux.
+- Virtualización en Linux con kvm/qemu/libvirt.
+- LinuxBridge y OpenVSwitch.
+- Linux NameSpaces.
+- Redes en general.
+- OpenStack.
+- NFS, GlusterFS.
+- Instalación "correcta" de Centos 7.
+
+Este instalador es SOLAMENTE para CENTOS 7 / SL7 / RHEL 7 de 64 bits (x86_64 / amd64). No intente usarlo en otro ambiente.
+
+1.- Repositorios:
+
+Asegurese de tener los repositorios de centos, epel y openstack-rdo:
+
+yum -y install http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-2.noarch.rpm
+yum -y install https://repos.fedorapeople.org/repos/openstack/openstack-juno/rdo-release-juno-1.noarch.rpm
+yum -y update rdo-release epel-release
+
+NOTA: A veces las versiones del RPM de epel e icehouse son actualizadas. Si le falla alguno de los comandos de yum descritos anteriormente, consulte las páginas siguientes para verificar el rpm correcto:
+      - http://download.fedoraproject.org/pub/epel/7/x86_64
+      - http://repos.fedorapeople.org/repos/openstack/openstack-juno/
+
+2.- Kernel y/o paquetes "core" actualizados por RDO:
+
+Luego de instalar los repositorios RDO y EPEL, ejecute un "yum -y update" para actualizar el S/O e incluir el kernel RDO con soporte de "namespaces" u otros utilitarios que sea requerido actualizar por RDO.
+
+yum -y update
+
+NOTA: Deberá reiniciar el servidor para que arranque con el nuevo kernel (solo si esto aplica).
+
+
+3.- OpenVSWITCH:
+
+Instale openvswitch y cree sus bridges. Ejecute los comandos a continuación (luego de colocar los repositorios indicados anteriormente):
+
+yum -y install openvswitch
+
+service openvswitch start
+
+chkconfig openvswitch on
+
+Creee el switch de integración:
+
+ovs-vsctl add-br br-int
+
+Luego cree el switch para la (o las) red(es) de OpenStack. Ejemplo para br-enp0s9 (suponiendo que enp0s9 va a ser la interfaz dedicada para OpenStack):
+
+ovs-vsctl add-br br-enp0s9
+ovs-vsctl add-port br-enp0s9 enp0s9
+
+
+NOTA: Trate siempre de usar una interfaz que esté LIBRE y pueda ser "dedicada" para OpenStack. Para otras configuraciones, consulte la información que está disponible en Internet. No es necesario colocar las interfaces asociadas a los switches en /etc/sysconfig/network-scripts/, a menos que las tenga "compartidas" y no dedicadas para OpenStack.
+
+4.- MySQL en Centos
+
+Si usted va a usar un manejador MySQL/MariaDB externo, el mismo DEBE SER versión 5.5. No le damos ninguna garantía que funcione Icehouse con otras versiones de MySQL/MariaDB.
