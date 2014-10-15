@@ -9,8 +9,8 @@
 # Primera versión para Juno (centos): Octubre 12 del 2014
 #
 # Script principal
-# Versión 0.0.2.beta.el7 "Shadow Cat"
-# 13 de Octubre del 2014
+# Versión 0.0.3.beta.el7 "Shadow Cat"
+# 14 de Octubre del 2014
 #
 
 PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
@@ -42,7 +42,7 @@ case $1 in
 	echo "Para releases 7.0 en adelante"
 	echo "Realizado por Reynaldo R. Martinez P."
 	echo "E-Mail: TigerLinux@Gmail.com"
-	echo "Versión 0.0.2.beta.el7 \"Shadow Cat\" - Octubre 13, 2014"
+	echo "Versión 0.0.3.beta.el7 \"Shadow Cat\" - Octubre 14, 2014"
 	echo ""
 	echo "Se verificaran los prerequisitos"
 	echo "Si alguno de los prerequisitos falla, se informará y se detendrá el proceso"
@@ -371,6 +371,24 @@ case $1 in
                 ;;
         esac
 
+	if [ $saharainstall == "yes" ]
+	then
+		echo ""
+		echo "Instalando sahara"
+
+		./modules/saharainstall.sh
+
+		if [ -f /etc/openstack-control-script-config/sahara-installed ]
+		then
+			echo "sahara exitosamente instalado"
+		else
+			echo ""
+			echo "Falló el módulo de instalación de sahara"
+			echo "Abortando el resto de la instalación"
+			echo ""
+			exit 0
+		fi
+	fi
 
 	if [ $snmpinstall == "yes" ]
 	then

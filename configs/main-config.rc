@@ -113,6 +113,10 @@ heatdbpass="P@ssw0rd"
 trovedbname="trovedb"
 trovedbuser="trovedbuser"
 trovedbpass="P@ssw0rd"
+# Sahara
+saharadbname="saharadb"
+saharadbuser="saharadbuser"
+saharadbpass="P@ssw0rd"
 
 # En la siguiente seccion se definen los datos de keystone
 # Si se requiere instalar keystone, dejar keystoneinstall="yes",
@@ -455,8 +459,6 @@ extraheathosts=""
 # Datos de configuración para trove
 # Por defecto va en "no" a menos que lo vaya a
 # usar realmente
-# ALERTA !!
-# Todavía esto hay que considerarlo EXPERIMENTAL
 #
 troveinstall="no"
 trovehost="192.168.50.13"
@@ -471,6 +473,23 @@ troveemail="trove@localhost"
 extratrovehosts=""
 
 
+# Datos de configuración para sahara
+# Por defecto va en "no" a menos que lo vaya a
+# usar realmente
+#
+saharainstall="no"
+saharahost="192.168.50.13"
+saharauser="sahara"
+saharasvce="sahara"
+saharapass="P@ssw0rd"
+saharaemail="sahara@localhost"
+# Solo para la base de datos:
+# Si se van a tener varios hosts de nova, colocar aquí las IP's
+# para el acceso de la base de datos - sólo efectivo cuando el backend
+# es MySQL
+extrasaharahosts=""
+
+
 # Instalacion de infraestructura de monitoreo
 # Si quiere monitorear su OpenStack, lo puede hacer
 # via snmp - por defecto: no
@@ -482,7 +501,6 @@ extratrovehosts=""
 # Cambie la comunidad en /etc/snmp/snmpd.conf segun
 # sus necesidades
 snmpinstall="no"
-
 
 
 # Horizon

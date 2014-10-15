@@ -51,6 +51,10 @@ then
 		# yum -y install mysql-server
 		yum -y erase mysql
 		yum -y install mariadb-galera-server mariadb-galera-common mariadb-galera galera
+		# Parche para SAHARA
+		yum -y install openstack-utils
+		cat ./libs/openstack-config > /usr/bin/openstack-config
+		openstack-config --set /etc/my.cnf.d/server.cnf mysqld max_allowed_packet 256M
 		service mysqld start
 		chkconfig mysqld on
 		/usr/bin/mysqladmin -u $mysqldbadm password $mysqldbpassword
@@ -246,6 +250,20 @@ then
 		sleep 5
 		sync
 
+		echo "Creando database de sahara"
+		echo "CREATE DATABASE $saharadbname default character set utf8;"|$mysqlcommand
+		echo "GRANT ALL ON $saharadbname.* TO '$saharadbuser'@'%' IDENTIFIED BY '$saharadbpass';"|$mysqlcommand
+		echo "GRANT ALL ON $saharadbname.* TO '$saharadbuser'@'localhost' IDENTIFIED BY '$saharadbpass';"|$mysqlcommand
+		echo "GRANT ALL ON $saharadbname.* TO '$saharadbuser'@'$saharahost' IDENTIFIED BY '$saharadbpass';"|$mysqlcommand
+		for extrahost in $extrasaharahosts
+		do
+			echo "GRANT ALL ON $saharadbname.* TO '$saharadbuser'@'$extrahost' IDENTIFIED BY '$saharadbpass';"|$mysqlcommand
+		done
+		echo "FLUSH PRIVILEGES;"|$mysqlcommand
+		sync
+		sleep 5
+		sync
+
 		echo ""
 		echo "Lista de databases instaladas:"
 		echo "show databases;"|$mysqlcommand
@@ -336,6 +354,15 @@ then
 		echo "ALTER user $trovedbuser with password '$trovedbpass'"|$psqlcommand
 		echo "CREATE DATABASE $trovedbname"|$psqlcommand
 		echo "GRANT ALL PRIVILEGES ON database $trovedbname TO $trovedbuser;"|$psqlcommand
+		sync
+		sleep 5
+		sync
+
+		echo "Creando database de sahara"
+		echo "CREATE user $saharadbuser;"|$psqlcommand
+		echo "ALTER user $saharadbuser with password '$saharadbpass'"|$psqlcommand
+		echo "CREATE DATABASE $saharadbname"|$psqlcommand
+		echo "GRANT ALL PRIVILEGES ON database $saharadbname TO $saharadbuser;"|$psqlcommand
 		sync
 		sleep 5
 		sync

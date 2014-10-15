@@ -56,6 +56,10 @@ trove_svc_start='
 	openstack-trove-conductor
 '
 
+sahara_svc_start='
+	openstack-sahara-all
+'
+
 if [ -f /etc/openstack-control-script-config/neutron-full-installed ]
 then
 	if [ -f /etc/openstack-control-script-config/neutron-full-installed-metering ]
@@ -157,6 +161,7 @@ nova_svc_stop=`echo $nova_svc_start|tac -s' '`
 ceilometer_svc_stop=`echo $ceilometer_svc_start|tac -s' '`
 heat_svc_stop=`echo $heat_svc_start|tac -s' '`
 trove_svc_stop=`echo $trove_svc_start|tac -s' '`
+sahara_svc_stop=`echo $sahara_svc_start|tac -s' '`
 
 
 case $1 in
@@ -254,6 +259,15 @@ start)
 		done
 	fi
 
+        if [ -f /etc/openstack-control-script-config/sahara ]
+        then
+                for i in $sahara_svc_start
+                do
+                        service $i start
+                        #sleep 1
+                done
+        fi
+
 	echo ""
 
 	;;
@@ -263,6 +277,15 @@ stop)
 	echo ""
 	echo "Deteniendo Servicios de OpenStack"
 	echo ""
+
+        if [ -f /etc/openstack-control-script-config/sahara ]
+        then
+                for i in $sahara_svc_stop
+                do
+                        service $i stop
+                        #sleep 1
+                done
+        fi
 
 	if [ -f /etc/openstack-control-script-config/trove ]
 	then
@@ -436,6 +459,14 @@ status)
 		done
 	fi
 
+        if [ -f /etc/openstack-control-script-config/sahara ]
+        then
+                for i in $sahara_svc_start
+                do
+                        service $i status
+                done
+        fi
+
 	echo ""
 	;;
 
@@ -517,6 +548,13 @@ enable)
 		done
 	fi
 
+        if [ -f /etc/openstack-control-script-config/sahara ]
+        then
+                for i in $sahara_svc_start
+                do
+                        chkconfig $i on
+                done
+        fi
 
 	echo ""
 	;;
@@ -599,6 +637,14 @@ disable)
 		done
 	fi
 
+        if [ -f /etc/openstack-control-script-config/sahara ]
+        then
+                for i in $sahara_svc_start
+                do
+                        chkconfig $i off
+                done
+        fi
+
         echo ""
 	;;
 
@@ -607,6 +653,15 @@ restart)
 	echo ""
 	echo "Reiniciando Servicios de OpenStack"
 	echo ""
+
+        if [ -f /etc/openstack-control-script-config/sahara ]
+        then
+                for i in $sahara_svc_stop
+                do
+                        service $i stop
+                        #sleep 1
+                done
+        fi
 
 	if [ -f /etc/openstack-control-script-config/trove ]
 	then
@@ -783,6 +838,15 @@ restart)
 		done
 	fi
 
+        if [ -f /etc/openstack-control-script-config/sahara ]
+        then
+                for i in $sahara_svc_start
+                do
+                        service $i start
+                        #sleep 1
+                done
+        fi
+
 	echo ""
 
 	;;
@@ -795,6 +859,7 @@ restart)
 	echo "restart:  Reinicia en orden todos los servicios de OpenStack"
 	echo "enable:   Activa el arranque automatico de todos los servicios de OpenStack"
 	echo "disable:  Desactiva el arranque automatico de todos los servicios de OpenStack"
+	echo "status:   Muestra el estado de los servicios de OpenStack"
 	echo ""
 	;;
 

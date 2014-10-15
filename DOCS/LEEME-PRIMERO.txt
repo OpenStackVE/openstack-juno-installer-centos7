@@ -7,7 +7,7 @@ Caracas, Venezuela.
 
 Este instalador fue realizado para automatizar las tareas de creación de una
 infraestructura de virtualización basada en OpenStack. Hasta el momento,
-existen cuatro "sabores" del instalador, uno para Debian 7, uno para Centos 7,
+existen tres "sabores" del instalador, uno para Debian 7, uno para Centos 7,
 y finalmente uno para Ubuntu 14.04 LTS.
 
 Las tres versiones producen un OpenStack utilizable en producción, pero recomen-
@@ -31,7 +31,7 @@ Los paquetes de Ubuntu son los que normalemte están mas actualizados.
 
 *LEA, LEA, LEA y luego de descansar de leer, LEA DE NUEVO !!.*
 
-Lea todo lo que puede de *OpenStack* si desea incursionar en el área de
+Lea todo lo que pueda de *OpenStack* si desea incursionar en el área de
 virtualización en la nube.  Si no le gusta leer, entonces apóyese en alguien
 que si tenga la disposición para hacerlo, pero no trate de usar este
 instalador sin tener algún tipo de conocimientos a la mano. Vea el archivo
@@ -61,12 +61,12 @@ en el mismo. Hay cosas muy obvias como *contraseñas*, *direcciones IP*,
 
 En su versión por defecto, el archivo de configuración tiene las selecciones
 de módulos para instalar lo que se conoce como un "all-in-one" (un servidor
-monolítico de *OpenStack* con todos los servicios).
+monolítico de *OpenStack* con todos los servicios mas usados).
 
 Adicionalmente, existen tres módulos que por defecto están en "no":
-*Heat*, *Swift* y *SNMP*. El módulo de swift se puede instalar "si usted
-realmente va a usarlo". *Swift* por si solo ya es casi tan extenso como todo 
-*OpenStack*. Úselo si **REALMENTE** sabe lo que está haciendo y si **REALMENTE**
+*Heat*, *Swift*, *Trove*, *Sahara* y *SNMP*. El módulo de swift se puede instalar
+"si usted realmente va a usarlo". *Swift* por si solo ya es casi tan extenso como
+todo *OpenStack*. Úselo si **REALMENTE** sabe lo que está haciendo y si **REALMENTE**
 lo va a utilizar. El módulo de *SNMP* instala variables de monitoreo útiles si
 usted va a monitorear *OpenStack* vía *SNMP* pero no instala ningún tipo de
 aplicación de monitoreo. Las variables están descritas (si usted instala el
@@ -96,6 +96,10 @@ de manera automática sin preguntar. Ejemplo:
 
 Usted puede guardar todas las salidas del instalador usando la herramienta
 `tee`. Ejemplo:
+
+```bash
+./main-installer.sh install | tee -a /var/log/my_log_de_install.log
+```
 
 Si su nodo de controller va a incluir un servicio de compute (controller +
 compute), la siguiente variable del archivo de configuración debe estar en
@@ -139,11 +143,18 @@ dbbackendhost="IP del controlador o del backend de base de datos"
 vncserver_controller_address | spiceserver_controller_address = "IP del controlador"
 ```
 
+Adicionalmente, debe colocar las siguientes variables con la IP del nodo de compute:
+
+```bash
+neutron_computehost="IP del Nova Compute Host"
+nova_computehost="IP del Nova Compute Host"
+```
+
 ### Backend de Base de Datos
 
-El instalador tiene la posibilidad de instalar y configurar el backend de base de datos, y de crear
-las bases de datos. Esto es completamente controlable por el archivo de configuración a través de las
-siguientes variables:
+El instalador tiene la posibilidad de instalar y configurar el backend de base de
+datos, y de crear las bases de datos. Esto es completamente controlable por el archivo
+de configuración a través de las siguientes variables:
 
 ```bash
 dbcreate="yes"
@@ -200,10 +211,10 @@ mas fácil de reconfigurar para SSL.
 
 ### Trove
 
-Este instalador tiene la opción de instalar Trove (ya estable a partir de OS-Icehouse). El
-módulo de instalación de Trove hace la configuración base de Trove pero NO CREA las imágenes
-ni reconfigura los datastores para dichas imágenes. Eso le toca a usted como administrador
-de la nube de OpenStack (jejeje).
+Este instalador tiene la opción de instalar Trove (ya mas estable a partir de OS-JUNO).
+El módulo de instalación de Trove hace la configuración base de Trove pero NO CREA las
+imágenes ni reconfigura los datastores para dichas imágenes. Eso le toca a usted como
+administrador de la nube de OpenStack (jejeje).
 
 
 ### Scripts de Ayuda
@@ -314,12 +325,14 @@ serán instalados):
 * ceilometerinstall.sh
 * heatinstall.sh
 * troveinstall.sh
+* saharainstall.sh
 * snmpinstall.sh
 * horizoninstall.sh
 * postinstall.sh
 
-Si desea ejecutar los módulos en orden sin usar el instalador principal, debe ejecutarlos desde el
-directorio donde se encuentra el instalador, de la siguiente manera:
+Si desea ejecutar los módulos en orden sin usar el instalador principal, debe
+ejecutarlos desde el directorio donde se encuentra el instalador, de la siguiente
+manera:
 
 ```
 # ./modules/Modulo-a-ejecutar.sh
@@ -347,23 +360,8 @@ servicios están instalados para iniciar/detener/reiniciar/etc.
 
 #### Centos 6:
 
-1. Instale centos con la selección de paquetes para "Basic Server" (servidor
-   básico). Asegúrese de tener correctamente instalado, configurado y operativo
-   el servicio ntpd. Se recomienda también usar ntpdate.
-
-2. Agregue los repositorios EPEL y RDO (ver "NOTAS.txt").
-
-3. Instale y configure OpenVSWitch (de nuevo, ver "NOTAS.txt").
-
-ALERTA: Esta versión de OpenStack no soporta MySQL menor a 5.5. Vea las notas
-y tome sus precauciones !.
-
-La versión para CENTOS 6 de este instalador usa MariaDB 5.5 disponible en los
-repositorios RDO.
-
-Si usted va a usar un manejador de base de datos externo basado en MySQL/MariaDB,
-ASEGURESE que sea la versión correcta (5.5) para no terminar con una instalación
-de OpenStack inservible !.
+Lamentablemente, dado que RDO no ha publicado (aún) paquetes de OpenStack JUNO para
+Centos 6, no tenemos como soportar esta versión del Sistema Operativo.
 
 
 #### Centos 7:
@@ -385,8 +383,9 @@ de OpenStack inservible !.
 
 NOTA IMPORTANTE: El instalador de Centos 7 desactiva SELINUX. Esto se requiere para
 evitar problemas encontrados especialmente cuando se utiliza PostgreSQL como backend
-de base de datos y con NOVA-API. Cuando estos bugs sean corregidos, se volverá a reactivar
-SELINUX. Por lo pronto, lo desactivamos desde el módulo de requerimientos.
+de base de datos y con NOVA-API. Cuando estos bugs sean corregidos en los paquetes de
+RDO, se volverá a reactivar SELINUX. Por lo pronto, lo desactivamos desde el módulo 
+de requerimientos.
 
 
 #### Debian 7:
@@ -396,10 +395,11 @@ SELINUX. Por lo pronto, lo desactivamos desde el módulo de requerimientos.
 de tener correctamente instalado, configurado y operativo el servicio ntpd. Se
 recomienda también usar ntpdate.
 
-2. Agregue el repositorio de OpenStack para Debian y asegúrese de tener las ramas completas para sus repos
-de debian (ver "NOTAS.txt").
+2. Agregue el repositorio de OpenStack para Debian y asegúrese de tener las ramas completas
+para sus repos de debian (ver "NOTAS.txt").
 
 3. Instale y configure OpenVSWitch (de nuevo, ver "NOTAS.txt").
+
 
 #### Ubuntu 14.0.4 LTS:
 
@@ -408,10 +408,11 @@ de debian (ver "NOTAS.txt").
 
 2. Instale y configure OpenVSWitch (ver "NOTAS.txt").
 
+
 ### Cinder:
 
-Si va a usar CINDER con lvm-iscsi, asegúrese de tener una partición o disco libre para crear un LVM
-llamado "cinder-volumes". Ejemplo (disco libre /dev/sdc):
+Si va a usar CINDER con lvm-iscsi, asegúrese de tener una partición o disco libre para crear
+un LVM llamado "cinder-volumes". Ejemplo (disco libre /dev/sdc):
 
 ```bash
 pvcreate /dev/sdc
@@ -427,8 +428,9 @@ vgcreate cinder-volumes /dev/sda3
 
 ### Swift:
 
-Si va a usar swift, recuerde que debe tener el disco/partición de swift montado sobre un directorio
-específico y este debe ser indicado en la configuración del instalador (main-config.rc).
+Si va a usar swift, recuerde que debe tener el disco/partición de swift montado sobre un
+directorio específico y este debe ser indicado en la configuración del instalador
+(main-config.rc).
 
 Ejemplo:
 
@@ -440,14 +442,15 @@ En el fstab "d1" debe estar montado así:
 /dev/sdc1 /srv/node/d1 ext4 acl,user_xattr 0 0
 ```
 
-En este ejemplo, se asume que existe ya una partición "/dev/sdc1" previamente formateada en ext4 o
-cualquier otro sistema de archivos soportado por Linux.
+En este ejemplo, se asume que existe ya una partición "/dev/sdc1" previamente formateada
+en ext4 o cualquier otro sistema de archivos soportado por Linux.
 
 
 ### Arquitectura:
 
 Ya sea que use Centos, Debian o Ubuntu, debe elegir utilizar 64 bits
 (amd64/x86_64). No trate de instalar OpenStack en 32 bits.
+
 
 ### Servicio NTP:
 
@@ -463,6 +466,7 @@ servidor "real" para practicar y aprender OpenStack. Debería tener un "mínimo
 absoluto" de 2GB's de RAM en su equipo "real" y asignar al menos 900 Mb's de
 RAM a la VM de VirtualBox, pero si quiere hacer una prueba mas extensa, trate
 de tener una VM con al menos 4 GB's.
+
 
 ### Recomendaciones de hardware para una VM de VirtualBox:
 
@@ -572,11 +576,11 @@ los scripts y sus respectivos "readmes" para entender mejor como usarlos !.
 
 Este instalador fue orientado inicialmente al modelo de red flat/vlan's con
 router externos donde el módulo de red (Neutron) no canalizará tráfico (sólo
-manejará los recursos de puertos de ovs y lbaas y levantará las
+manejará los recursos de puertos de ovs, lbaas, fwaas, vpnaas y levantará las
 configuraciones necesarias). En este modelo, neutron "no se convierte" en un
 posible cuello de botella para el tráfico de red. Sin embargo, usted "si tiene
-los conocimientos de configuración de openstack" puede adaptar la
-configuración y/o los módulos a sus necesidades en caso de querer utilizar el
-modelo de tunneling o cualquier otra configuración de Neutron que requiera.
+los conocimientos de configuración de openstack" puede adaptar la configuración 
+y/o los módulos a sus necesidades en caso de querer utilizar el modelo de
+tunneling o cualquier otra configuración de Neutron que requiera.
 
 ### FIN.-

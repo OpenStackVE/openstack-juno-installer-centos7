@@ -53,6 +53,7 @@ yum -y erase openstack-glance \
 	openstack-ceilometer-* \
 	openstack-heat-* \
 	openstack-trove-* \
+	openstack-sahara* \
 	mongodb-server \
 	mongodb \
 	haproxy \

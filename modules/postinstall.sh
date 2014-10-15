@@ -77,11 +77,25 @@ echo "Reiniciando todos los servicios y limpiando los logs"
 echo ""
 
 /usr/local/bin/openstack-control.sh stop
-service rabbitmq-server stop
+case $brokerflavor in
+"rabbitmq")
+	service rabbitmq-server stop
+	;;
+"qpid")
+	service qpidd stop
+	;;
+esac
 sleep 1
 sync
 sleep 1
-service rabbitmq-server start
+case $brokerflavor in
+"rabbitmq")
+	service rabbitmq-server start
+	;;
+"qpid")
+	service qpidd start
+	;;
+esac
 sync
 sleep 1
 /usr/local/bin/openstack-log-cleaner.sh auto

@@ -1,3 +1,11 @@
+0.0.3.beta.el7 - 14-Oct-2014
+- Se agrega el módulo de instalación de
+  SAHARA y las respectivas adecuaciones
+  en los módulos de keystone, base de datos
+  y scripts de soporte del instalador para
+  Sahara.
+- Mejoras en el README principal.
+
 0.0.2.beta.el7 - 13-Oct-2014
 - Segundo beta basado en JUNO (RC1/B3)
 - Se desactiva SELINUX por bugs encontrados

@@ -321,15 +321,17 @@ case $dbflavor in
 "postgres")
         if [ $troveinstall == "yes" ]
         then
-                echo ""
-                echo "Ha seleccionado instalar trove con DBFlavor = postgres"
-                echo "nuestro instalado aun no soporta dicha opción"
-                echo "Se continuará el proceso de Keystone pero no se crearán"
-                echo "entradas para Trove"
-                echo ""
+		./modules/keystone-trove.sh
         fi
         ;;
 esac
+
+
+if [ $saharainstall == "yes" ]
+then
+	./modules/keystone-sahara.sh
+fi
+
 
 ./modules/keystone-extratenants.sh
 
