@@ -83,21 +83,31 @@ case $brokerflavor in
 
 	yum -y install rabbitmq-server
 
-	chkconfig rabbitmq-server on
-	service rabbitmq-server stop
-	service rabbitmq-server stop
-	sync
-	sleep 2
-	sync
-	service rabbitmq-server start
-	sync
-	sleep 2
-	sync
-	service rabbitmq-server start
+	echo "RABBITMQ_NODE_IP_ADDRESS=0.0.0.0" > /etc/rabbitmq/rabbitmq-env.conf
 
+	chkconfig rabbitmq-server on
 	sync
 	sleep 5
 	sync
+	service rabbitmq-server start
+	
+	# Parche para asegurarnos que rabbit funciona en algun momento
+	mytest=0
+	mycounter=1
+	while [ $mytest == "0" ]
+	do
+		echo "Verificando RabbitMQ - Intento $mycounter"
+		service rabbitmq-server restart
+		sleep 1
+		mytest=`rabbitmqctl status|grep -c "erlang_version"`
+		let mycounter=mycounter+1
+	done
+
+	echo "RabbitMQ Verificado"
+
+	rabbitmqctl status
+
+	sleep 2
 
 	rabbitmqctl add_vhost $brokervhost
 	rabbitmqctl list_vhosts
@@ -116,12 +126,16 @@ case $brokerflavor in
 		echo ""
 		exit 0
 	else
+		vhosttest=`rabbitmqctl list_vhosts|grep -c $brokervhost`
+		if [ $vhosttest == "0" ]
+		then
+			echo ""
+			echo "Falló la creación del vhost de OpenStack - abortando el resto del proceso"
+			echo ""
+			exit 0
+		fi
+		
 		date > /etc/openstack-control-script-config/broker-installed
-		service rabbitmq-server stop
-		sync
-		sleep 2
-		sync
-		service rabbitmq-server start
 	fi
 
 	;;

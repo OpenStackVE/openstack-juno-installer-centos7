@@ -6,8 +6,8 @@
 # Octubre del 2014
 #
 # Archivo de configuracion principal
-# Para el instalador versión 0.0.2.beta.el7 "Shadow Cat"
-# Octubre 13, 2014
+# Para el instalador versión 0.0.4.beta.el7 "Shadow Cat"
+# Octubre 15, 2014
 #
 
 #
@@ -424,16 +424,22 @@ ceilometerpass="P@ssw0rd"
 ceilometeremail="ceilometer@localhost"
 # Datos de acceso de la BD "mongodb" de Ceilometer
 # Se recomienda ALTAMENTE no modificar estos valores
-#
-mondbhost="127.0.0.1"
+# a excepción de la dirección IP del host
+mondbhost="192.168.50.13"
 mondbport="27017"
 mondbname="ceilometer"
+mondbuser="ceilometer"
+# NOTA: Por alguna razon, el password para MongoDB no puede contener
+# arrobas u otros caracteres que requieran ser "escapados"
+# Use un pass con ascii básico y números.. Please !!
+mondbpass="C3iL0m3T3r-Op3nStaCk"
 # Password del servicio de metering
 metering_secret="P@ssw0rd"
 #
 # Si se va a instalar el módulo de alarmas, colocar
 # la siguiente variable en "yes"
 ceilometeralarms="yes"
+
 
 
 

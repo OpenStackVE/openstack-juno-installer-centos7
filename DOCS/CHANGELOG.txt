@@ -1,3 +1,13 @@
+0.0.4.beta.el7 - 15-Oct-2014
+- Se agrega autenticación y se refuerza la
+  seguridad entre MongoDB y Ceilometer.
+- Cambios adicionales para asegurar la
+  correcta instalación y configuración de
+  RabbitMQ.
+- Cambios menores en secuencia de instalación
+  de neutron respecto a aprovisionamiento de
+  la base de datos.
+
 0.0.3.beta.el7 - 14-Oct-2014
 - Se agrega el módulo de instalación de
   SAHARA y las respectivas adecuaciones

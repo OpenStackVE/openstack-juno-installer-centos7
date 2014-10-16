@@ -89,10 +89,19 @@ echo ""
 echo "Instalando y configurando Backend de BD MongoDB"
 echo ""
 
-yum -y install mongodb-server
+yum -y install mongodb-server mongodb
 sed -i '/--smallfiles/!s/OPTIONS=\"/OPTIONS=\"--smallfiles /' /etc/sysconfig/mongod
+sed -i "s/127.0.0.1/$mondbhost/g" /etc/mongodb.conf
+sed -i "s/27017/$mondbport/g" /etc/mongodb.conf
+
 service mongod start
 chkconfig mongod on
+
+mongo --host $mondbhost --eval "db = db.getSiblingDB(\"$mondbname\");db.addUser({user: \"$mondbuser\",pwd: \"$mondbpass\",roles: [ \"readWrite\", \"dbAdmin\" ]})"
+
+sync
+sleep 5
+sync
 
 echo ""
 echo "Configurando Ceilometer"
@@ -129,6 +138,7 @@ openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT os_auth_region $e
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT host $ceilometerhost
 
 openstack-config --del /etc/ceilometer/ceilometer.conf DEFAULT sql_connection
+openstack-config --del /etc/ceilometer/ceilometer.conf DEFAULT sql_connection
 
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT nova_control_exchange nova
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT glance_control_exchange glance
@@ -148,7 +158,8 @@ fi
 
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT debug false
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT verbose false
-openstack-config --set /etc/ceilometer/ceilometer.conf database connection "mongodb://$mondbhost:$mondbport/$mondbname"
+# openstack-config --set /etc/ceilometer/ceilometer.conf database connection "mongodb://$mondbhost:$mondbport/$mondbname"
+openstack-config --set /etc/ceilometer/ceilometer.conf database connection "mongodb://$mondbuser:$mondbpass@$mondbhost:$mondbport/$mondbname"
 # openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT metering_secret $metering_secret
 # openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT metering_secret $SERVICE_TOKEN
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT log_dir /var/log/ceilometer
