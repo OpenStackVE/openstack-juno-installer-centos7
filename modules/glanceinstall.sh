@@ -81,6 +81,7 @@ sync
 openstack-config --set /etc/glance/glance-api.conf DEFAULT verbose False
 openstack-config --set /etc/glance/glance-api.conf DEFAULT debug False
 openstack-config --set /etc/glance/glance-api.conf DEFAULT default_store file
+openstack-config --set /etc/glance/glance-api.conf glance_store default_store file
 openstack-config --set /etc/glance/glance-api.conf DEFAULT bind_host 0.0.0.0
 openstack-config --set /etc/glance/glance-api.conf DEFAULT bind_port 9292
 openstack-config --set /etc/glance/glance-api.conf DEFAULT log_file /var/log/glance/api.log
@@ -90,15 +91,11 @@ openstack-config --set /etc/glance/glance-api.conf DEFAULT use_syslog False
 
 case $dbflavor in
 "mysql")
-	#openstack-config --set /etc/glance/glance-api.conf DEFAULT sql_connection mysql://$glancedbuser:$glancedbpass@$dbbackendhost:$mysqldbport/$glancedbname
 	openstack-config --set /etc/glance/glance-api.conf database connection mysql://$glancedbuser:$glancedbpass@$dbbackendhost:$mysqldbport/$glancedbname
-	#openstack-config --set /etc/glance/glance-registry.conf DEFAULT sql_connection mysql://$glancedbuser:$glancedbpass@$dbbackendhost:$mysqldbport/$glancedbname
 	openstack-config --set /etc/glance/glance-registry.conf database connection mysql://$glancedbuser:$glancedbpass@$dbbackendhost:$mysqldbport/$glancedbname
 	;;
 "postgres")
-	#openstack-config --set /etc/glance/glance-api.conf DEFAULT sql_connection postgresql://$glancedbuser:$glancedbpass@$dbbackendhost:$psqldbport/$glancedbname
 	openstack-config --set /etc/glance/glance-api.conf database connection postgresql://$glancedbuser:$glancedbpass@$dbbackendhost:$psqldbport/$glancedbname
-	#openstack-config --set /etc/glance/glance-registry.conf DEFAULT sql_connection postgresql://$glancedbuser:$glancedbpass@$dbbackendhost:$psqldbport/$glancedbname
 	openstack-config --set /etc/glance/glance-registry.conf database connection postgresql://$glancedbuser:$glancedbpass@$dbbackendhost:$psqldbport/$glancedbname
 	;;
 esac
@@ -160,7 +157,6 @@ openstack-config --set /etc/glance/glance-api.conf keystone_authtoken admin_user
 openstack-config --set /etc/glance/glance-api.conf keystone_authtoken admin_password $glancepass
 openstack-config --set /etc/glance/glance-api.conf keystone_authtoken auth_uri http://$keystonehost:5000/v2.0/
 openstack-config --set /etc/glance/glance-api.conf keystone_authtoken identity_uri http://$keystonehost:35357
-# openstack-config --set /etc/glance/glance-api.conf keystone_authtoken auth_uri http://$keystonehost:5000
 
 openstack-config --set /etc/glance/glance-api.conf paste_deploy flavor keystone
 
@@ -188,7 +184,6 @@ openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken admin
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken admin_password $glancepass
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_uri http://$keystonehost:5000/v2.0/
 openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken identity_uri http://$keystonehost:35357
-# openstack-config --set /etc/glance/glance-registry.conf keystone_authtoken auth_uri http://$keystonehost:5000
 
 openstack-config --set /etc/glance/glance-cache.conf DEFAULT verbose False
 openstack-config --set /etc/glance/glance-cache.conf DEFAULT debug False
@@ -223,11 +218,6 @@ echo ""
 
 echo "Activando Servicios de GLANCE"
 
-# systemctl enable openstack-glance-api.service
-# systemctl enable openstack-glance-registry.service
-# systemctl start openstack-glance-api.service
-# systemctl start openstack-glance-registry.service
-
 service openstack-glance-registry start
 service openstack-glance-api start
 chkconfig openstack-glance-registry on
@@ -239,20 +229,20 @@ if [ $glance_use_swift == "yes" ]
 then
 	if [ -f /etc/openstack-control-script-config/swift-installed ]
 	then
-		openstack-config --set /etc/glance/glance-api.conf DEFAULT default_store swift
-		openstack-config --set /etc/glance/glance-api.conf DEFAULT swift_store_auth_address http://$keystonehost:5000/v2.0/
-		openstack-config --set /etc/glance/glance-api.conf DEFAULT swift_store_user $keystoneservicestenant:$swiftuser
-		openstack-config --set /etc/glance/glance-api.conf DEFAULT swift_store_key $swiftpass
-		openstack-config --set /etc/glance/glance-api.conf DEFAULT swift_store_create_container_on_put True
-		openstack-config --set /etc/glance/glance-api.conf DEFAULT swift_store_auth_version 2
-		openstack-config --set /etc/glance/glance-api.conf DEFAULT swift_store_container glance
-		openstack-config --set /etc/glance/glance-cache.conf DEFAULT default_store swift
-		openstack-config --set /etc/glance/glance-cache.conf DEFAULT swift_store_auth_address http://$keystonehost:5000/v2.0/
-		openstack-config --set /etc/glance/glance-cache.conf DEFAULT swift_store_user $keystoneservicestenant:$swiftuser
-		openstack-config --set /etc/glance/glance-cache.conf DEFAULT swift_store_key $swiftpass
-		openstack-config --set /etc/glance/glance-cache.conf DEFAULT swift_store_create_container_on_put True
-		openstack-config --set /etc/glance/glance-cache.conf DEFAULT swift_store_auth_version 2
-		openstack-config --set /etc/glance/glance-cache.conf DEFAULT swift_store_container glance
+		openstack-config --set /etc/glance/glance-api.conf glance_store default_store swift
+		openstack-config --set /etc/glance/glance-api.conf glance_store swift_store_auth_address http://$keystonehost:5000/v2.0/
+		openstack-config --set /etc/glance/glance-api.conf glance_store swift_store_user $keystoneservicestenant:$swiftuser
+		openstack-config --set /etc/glance/glance-api.conf glance_store swift_store_key $swiftpass
+		openstack-config --set /etc/glance/glance-api.conf glance_store swift_store_create_container_on_put True
+		openstack-config --set /etc/glance/glance-api.conf glance_store swift_store_auth_version 2
+		openstack-config --set /etc/glance/glance-api.conf glance_store swift_store_container glance
+		openstack-config --set /etc/glance/glance-cache.conf glance_store default_store swift
+		openstack-config --set /etc/glance/glance-cache.conf glance_store swift_store_auth_address http://$keystonehost:5000/v2.0/
+		openstack-config --set /etc/glance/glance-cache.conf glance_store swift_store_user $keystoneservicestenant:$swiftuser
+		openstack-config --set /etc/glance/glance-cache.conf glance_store swift_store_key $swiftpass
+		openstack-config --set /etc/glance/glance-cache.conf glance_store swift_store_create_container_on_put True
+		openstack-config --set /etc/glance/glance-cache.conf glance_store swift_store_auth_version 2
+		openstack-config --set /etc/glance/glance-cache.conf glance_store swift_store_container glance
 		service openstack-glance-registry restart
 		service openstack-glance-api restart
 	fi
@@ -313,7 +303,7 @@ then
 	glance image-list
 
 	echo ""
-	echo "Imágenes de cirros 0.3.2 para 32 y 64 bits creadas"
+	echo "Imágenes de cirros 0.3.3 para 32 y 64 bits creadas"
 	echo ""
 fi
 

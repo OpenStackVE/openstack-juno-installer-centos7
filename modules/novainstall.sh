@@ -62,8 +62,6 @@ fi
 echo ""
 echo "Instalando paquetes para Nova"
 
-# yum -y install spice-html5
-
 if [ $nova_in_compute_node = "no" ]
 then
 	yum install -y openstack-nova-novncproxy \
@@ -128,7 +126,6 @@ echo "Configurando NOVA"
 
 if [ $nova_in_compute_node = "no" ]
 then
-	# openstack-config --set /etc/nova/api-paste.ini filter:authtoken paste.filter_factory "keystoneclient.middleware.auth_token:filter_factory"
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken paste.filter_factory "keystonemiddleware.auth_token:filter_factory"
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken auth_protocol http
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken auth_host $keystonehost
@@ -136,7 +133,6 @@ then
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken auth_port 35357
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken admin_password $novapass
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken admin_user $novauser
-	# openstack-config --set /etc/nova/api-paste.ini filter:authtoken auth_uri http://$keystonehost:5000/
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken auth_uri http://$keystonehost:5000/v2.0
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken identity_uri http://$keystonehost:35357
 fi
@@ -148,7 +144,6 @@ openstack-config --set /etc/nova/nova.conf keystone_authtoken admin_tenant_name 
 openstack-config --set /etc/nova/nova.conf keystone_authtoken admin_user $novauser
 openstack-config --set /etc/nova/nova.conf keystone_authtoken admin_password $novapass
 openstack-config --set /etc/nova/nova.conf keystone_authtoken signing_dir /tmp/keystone-signing-nova
-# openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_uri http://$keystonehost:5000/
 openstack-config --set /etc/nova/nova.conf keystone_authtoken auth_uri http://$keystonehost:5000/v2.0
 openstack-config --set /etc/nova/nova.conf keystone_authtoken identity_uri http://$keystonehost:35357
 
@@ -183,8 +178,7 @@ openstack-config --set /etc/nova/nova.conf DEFAULT dhcpbridge /usr/bin/nova-dhcp
 openstack-config --set /etc/nova/nova.conf DEFAULT dhcpbridge_flagfile /etc/nova/nova.conf
 openstack-config --set /etc/nova/nova.conf DEFAULT force_dhcp_release True
 openstack-config --set /etc/nova/nova.conf DEFAULT injected_network_template /usr/share/nova/interfaces.template
-openstack-config --set /etc/nova/nova.conf DEFAULT libvirt_nonblocking True
-openstack-config --set /etc/nova/nova.conf DEFAULT libvirt_inject_partition -1
+openstack-config --set /etc/nova/nova.conf libvirt inject_partition -1
 openstack-config --set /etc/nova/nova.conf DEFAULT network_manager nova.network.manager.FlatDHCPManager
 openstack-config --set /etc/nova/nova.conf DEFAULT iscsi_helper tgtadm
 openstack-config --set /etc/nova/nova.conf DEFAULT vif_plugging_timeout 10
@@ -219,31 +213,30 @@ openstack-config --set /etc/nova/nova.conf DEFAULT verbose False
 openstack-config --set /etc/nova/nova.conf DEFAULT ec2_listen 0.0.0.0
 openstack-config --set /etc/nova/nova.conf DEFAULT service_down_time 60
 openstack-config --set /etc/nova/nova.conf DEFAULT image_service nova.image.glance.GlanceImageService
-openstack-config --set /etc/nova/nova.conf DEFAULT libvirt_use_virtio_for_bridges True
+openstack-config --set /etc/nova/nova.conf libvirt use_virtio_for_bridges True
 openstack-config --set /etc/nova/nova.conf DEFAULT osapi_compute_listen 0.0.0.0
-openstack-config --set /etc/nova/nova.conf DEFAULT neutron_metadata_proxy_shared_secret $metadata_shared_secret
+openstack-config --set /etc/nova/nova.conf neutron metadata_proxy_shared_secret $metadata_shared_secret
 openstack-config --set /etc/nova/nova.conf DEFAULT metadata_listen 0.0.0.0
 openstack-config --set /etc/nova/nova.conf DEFAULT osapi_compute_workers $osapiworkers
-# openstack-config --set /etc/nova/nova.conf DEFAULT libvirt_vif_driver nova.virt.libvirt.vif.LibvirtHybridOVSBridgeDriver
-openstack-config --set /etc/nova/nova.conf DEFAULT libvirt_vif_driver nova.virt.libvirt.vif.LibvirtGenericVIFDriver
-openstack-config --set /etc/nova/nova.conf DEFAULT neutron_region_name $endpointsregion
+openstack-config --set /etc/nova/nova.conf libvirt vif_driver nova.virt.libvirt.vif.LibvirtGenericVIFDriver
+openstack-config --set /etc/nova/nova.conf neutron region_name $endpointsregion
 openstack-config --set /etc/nova/nova.conf DEFAULT network_api_class nova.network.neutronv2.api.API
 openstack-config --set /etc/nova/nova.conf DEFAULT debug False
 openstack-config --set /etc/nova/nova.conf DEFAULT my_ip $nova_computehost
-openstack-config --set /etc/nova/nova.conf DEFAULT neutron_auth_strategy keystone
-openstack-config --set /etc/nova/nova.conf DEFAULT neutron_admin_password $neutronpass
+openstack-config --set /etc/nova/nova.conf neutron auth_strategy keystone
+openstack-config --set /etc/nova/nova.conf neutron admin_password $neutronpass
 openstack-config --set /etc/nova/nova.conf DEFAULT api_paste_config /etc/nova/api-paste.ini
-openstack-config --set /etc/nova/nova.conf DEFAULT glance_api_servers $glancehost:9292
-openstack-config --set /etc/nova/nova.conf DEFAULT neutron_admin_tenant_name $keystoneservicestenant
+openstack-config --set /etc/nova/nova.conf glance api_servers $glancehost:9292
+openstack-config --set /etc/nova/nova.conf neutron admin_tenant_name $keystoneservicestenant
 openstack-config --set /etc/nova/nova.conf DEFAULT metadata_host $novahost
 openstack-config --set /etc/nova/nova.conf DEFAULT security_group_api neutron
-openstack-config --set /etc/nova/nova.conf DEFAULT neutron_admin_auth_url "http://$keystonehost:35357/v2.0"
+openstack-config --set /etc/nova/nova.conf neutron admin_auth_url "http://$keystonehost:35357/v2.0"
 openstack-config --set /etc/nova/nova.conf DEFAULT enabled_apis "ec2,osapi_compute,metadata"
-openstack-config --set /etc/nova/nova.conf DEFAULT neutron_admin_username $neutronuser
-openstack-config --set /etc/nova/nova.conf DEFAULT service_neutron_metadata_proxy True
+openstack-config --set /etc/nova/nova.conf neutron admin_username $neutronuser
+openstack-config --set /etc/nova/nova.conf service neutron_metadata_proxy True
 openstack-config --set /etc/nova/nova.conf DEFAULT volume_api_class nova.volume.cinder.API
-openstack-config --set /etc/nova/nova.conf DEFAULT neutron_url "http://$neutronhost:9696"
-openstack-config --set /etc/nova/nova.conf DEFAULT libvirt_type kvm
+openstack-config --set /etc/nova/nova.conf neutron url "http://$neutronhost:9696"
+openstack-config --set /etc/nova/nova.conf libvirt virt_type kvm
 openstack-config --set /etc/nova/nova.conf DEFAULT instance_name_template $instance_name_template
 openstack-config --set /etc/nova/nova.conf DEFAULT start_guests_on_host_boot $start_guests_on_host_boot
 openstack-config --set /etc/nova/nova.conf DEFAULT resume_guests_state_on_host_boot $resume_guests_state_on_host_boot
@@ -277,12 +270,8 @@ openstack-config --set /etc/nova/nova.conf neutron admin_tenant_name $keystonese
 openstack-config --set /etc/nova/nova.conf neutron admin_username $neutronuser
 openstack-config --set /etc/nova/nova.conf neutron admin_password $neutronpass
 
-# Mas opciones nuevas para Nova
-# Algunas ya no están en Juno
 openstack-config --set /etc/nova/nova.conf DEFAULT linuxnet_ovs_integration_bridge $integration_bridge
-# openstack-config --set /etc/nova/nova.conf DEFAULT libvirt_ovs_bridge $integration_bridge
-openstack-config --set /etc/nova/nova.conf DEFAULT neutron_ovs_bridge $integration_bridge
-# openstack-config --set /etc/nova/nova.conf DEFAULT dhcp_options_enabled True
+openstack-config --set /etc/nova/nova.conf neutron ovs_bridge $integration_bridge
 
 case $consoleflavor in
 "vnc")
@@ -332,11 +321,7 @@ case $brokerflavor in
 	openstack-config --set /etc/nova/nova.conf DEFAULT qpid_hostname $messagebrokerhost
 	openstack-config --set /etc/nova/nova.conf DEFAULT qpid_password $brokerpass
 	openstack-config --set /etc/nova/nova.conf DEFAULT qpid_port 5672
-	# openstack-config --set /etc/nova/nova.conf DEFAULT qpid_reconnect_limit 0
-	# openstack-config --set /etc/nova/nova.conf DEFAULT qpid_reconnect_interval 0
-	# openstack-config --set /etc/nova/nova.conf DEFAULT qpid_reconnect_timeout 0
 	openstack-config --set /etc/nova/nova.conf DEFAULT qpid_heartbeat 60
-	# openstack-config --set /etc/nova/nova.conf DEFAULT qpid_reconnect_interval_max 0
 	;;
 
 "rabbitmq")
@@ -362,14 +347,12 @@ then
 	echo "El rendimiento será pobre"
 	echo ""
 	source $keystone_admin_rc_file
-	openstack-config --set /etc/nova/nova.conf DEFAULT libvirt_type qemu
 	openstack-config --set /etc/nova/nova.conf libvirt virt_type qemu
 	setsebool -P virt_use_execmem on
 	ln -s -f /usr/libexec/qemu-kvm /usr/bin/qemu-system-x86_64
 	service libvirtd restart
 	echo ""
 else
-	openstack-config --set /etc/nova/nova.conf DEFAULT libvirt_cpu_mode $libvirt_cpu_mode
 	openstack-config --set /etc/nova/nova.conf libvirt cpu_model $libvirt_cpu_mode
 fi
 
@@ -499,5 +482,4 @@ fi
 echo ""
 echo "Nova Instalado y Configurado"
 echo ""
-
 

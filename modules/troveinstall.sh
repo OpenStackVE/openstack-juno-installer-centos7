@@ -99,11 +99,9 @@ do
 
 	case $dbflavor in
 	"mysql")
-		# openstack-config --set $myconffile database connection mysql://$trovedbuser:$trovedbpass@$dbbackendhost:$mysqldbport/$trovedbname
 		openstack-config --set $myconffile DEFAULT sql_connection mysql://$trovedbuser:$trovedbpass@$dbbackendhost:$mysqldbport/$trovedbname
 		;;
 	"postgres")
-		# openstack-config --set $myconffile database connection postgresql://$trovedbuser:$trovedbpass@$dbbackendhost:$psqldbport/$trovedbname
 		openstack-config --set $myconffile DEFAULT sql_connection postgresql://$trovedbuser:$trovedbpass@$dbbackendhost:$psqldbport/$trovedbname
 		;;
 	esac
@@ -121,7 +119,6 @@ do
 	case $brokerflavor in
 	"qpid")
         	openstack-config --set $myconffile DEFAULT rpc_backend trove.openstack.common.rpc.impl_qpid
-        	# openstack-config --set $myconffile DEFAULT rpc_backend qpid
 	        openstack-config --set $myconffile DEFAULT qpid_reconnect_interval_min 0
 	        openstack-config --set $myconffile DEFAULT qpid_username $brokeruser
 	        openstack-config --set $myconffile DEFAULT qpid_tcp_nodelay True
@@ -134,7 +131,6 @@ do
 
 	"rabbitmq")
 	        openstack-config --set $myconffile DEFAULT rpc_backend trove.openstack.common.rpc.impl_kombu
-	        # openstack-config --set $myconffile DEFAULT rpc_backend rabbit
         	openstack-config --set $myconffile DEFAULT rabbit_host $messagebrokerhost
 	        openstack-config --set $myconffile DEFAULT rabbit_userid $brokeruser
 	        openstack-config --set $myconffile DEFAULT rabbit_password $brokerpass
@@ -156,10 +152,6 @@ openstack-config --set /etc/trove/trove-taskmanager.conf DEFAULT nova_proxy_admi
 openstack-config --set /etc/trove/trove-taskmanager.conf DEFAULT nova_proxy_admin_pass $keystoneadminpass
 openstack-config --set /etc/trove/trove-taskmanager.conf DEFAULT nova_proxy_admin_tenant_name $keystoneadmintenant
 
-# openstack-config --set /etc/trove/trove-conductor.conf DEFAULT nova_proxy_admin_user $keystoneadminuser
-# openstack-config --set /etc/trove/trove-conductor.conf DEFAULT nova_proxy_admin_pass $keystoneadminpass
-# openstack-config --set /etc/trove/trove-conductor.conf DEFAULT nova_proxy_admin_tenant_name $keystoneadmintenant
-
 
 case $dbflavor in
 "mysql")
@@ -179,7 +171,6 @@ troveworkers=`grep processor.\*: /proc/cpuinfo |wc -l`
 
 openstack-config --set /etc/trove/trove.conf DEFAULT trove_api_workers $troveworkers
 
-# openstack-config --set /etc/trove/api-paste.ini filter:authtoken admin_tenant_name $keystoneservicestenant
 openstack-config --set /etc/trove/api-paste.ini filter:authtoken admin_tenant_name $troveuser
 openstack-config --set /etc/trove/api-paste.ini filter:authtoken admin_user $troveuser
 openstack-config --set /etc/trove/api-paste.ini filter:authtoken admin_password $trovepass
@@ -190,7 +181,6 @@ openstack-config --set /etc/trove/api-paste.ini filter:authtoken auth_uri http:/
 openstack-config --set /etc/trove/api-paste.ini filter:authtoken identity_uri http://$keystonehost:35357
 openstack-config --set /etc/trove/api-paste.ini filter:authtoken signing_dir /var/cache/trove
 
-# openstack-config --set /etc/trove/trove.conf keystone_authtoken admin_tenant_name $keystoneservicestenant
 openstack-config --set /etc/trove/trove.conf keystone_authtoken admin_tenant_name $troveuser
 openstack-config --set /etc/trove/trove.conf keystone_authtoken admin_user $troveuser
 openstack-config --set /etc/trove/trove.conf keystone_authtoken admin_password $trovepass
@@ -275,6 +265,4 @@ fi
 echo ""
 echo "Trove Instalado"
 echo ""
-
-
 

@@ -117,7 +117,6 @@ openstack-config --set /etc/sahara/sahara.conf keystone_authtoken signing_dir /t
 
 case $brokerflavor in
 "qpid")
-	# openstack-config --set /etc/sahara/sahara.conf DEFAULT rpc_backend sahara.openstack.common.rpc.impl_qpid
 	openstack-config --set /etc/sahara/sahara.conf DEFAULT rpc_backend qpid
 	openstack-config --set /etc/sahara/sahara.conf DEFAULT qpid_reconnect_interval_min 0
 	openstack-config --set /etc/sahara/sahara.conf DEFAULT qpid_username $brokeruser
@@ -130,7 +129,6 @@ case $brokerflavor in
 	;;
 
 "rabbitmq")
-	# openstack-config --set /etc/sahara/sahara.conf DEFAULT rpc_backend sahara.openstack.common.rpc.impl_kombu
 	openstack-config --set /etc/sahara/sahara.conf DEFAULT rpc_backend rabbit
 	openstack-config --set /etc/sahara/sahara.conf DEFAULT rabbit_host $messagebrokerhost
 	openstack-config --set /etc/sahara/sahara.conf DEFAULT rabbit_userid $brokeruser

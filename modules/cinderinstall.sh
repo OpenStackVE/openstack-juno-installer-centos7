@@ -76,7 +76,6 @@ sync
 sleep 5
 sync
 
-# openstack-config --set /etc/cinder/api-paste.ini filter:authtoken paste.filter_factory  keystoneclient.middleware.auth_token:filter_factory
 openstack-config --set /etc/cinder/api-paste.ini filter:authtoken paste.filter_factory  "keystonemiddleware.auth_token:filter_factory"
 openstack-config --set /etc/cinder/api-paste.ini filter:authtoken service_protocol http
 openstack-config --set /etc/cinder/api-paste.ini filter:authtoken service_host $keystonehost
@@ -89,8 +88,6 @@ openstack-config --set /etc/cinder/api-paste.ini filter:authtoken admin_password
 openstack-config --set /etc/cinder/api-paste.ini filter:authtoken auth_port 35357
 openstack-config --set /etc/cinder/api-paste.ini filter:authtoken auth_uri http://$keystonehost:5000/v2.0/
 openstack-config --set /etc/cinder/api-paste.ini filter:authtoken identity_uri http://$keystonehost:35357
-# openstack-config --set /etc/cinder/api-paste.ini filter:authtoken auth_uri http://$keystonehost:5000
-
 
 openstack-config --set /etc/cinder/cinder.conf DEFAULT osapi_volume_listen 0.0.0.0
 openstack-config --set /etc/cinder/cinder.conf DEFAULT api_paste_config /etc/cinder/api-paste.ini
@@ -140,11 +137,9 @@ openstack-config --set /etc/cinder/cinder.conf DEFAULT iscsi_ip_address $cinder_
 
 case $dbflavor in
 "mysql")
-	# openstack-config --set /etc/cinder/cinder.conf DEFAULT sql_connection mysql://$cinderdbuser:$cinderdbpass@$dbbackendhost:$mysqldbport/$cinderdbname
 	openstack-config --set /etc/cinder/cinder.conf database connection mysql://$cinderdbuser:$cinderdbpass@$dbbackendhost:$mysqldbport/$cinderdbname
 	;;
 "postgres")
-	# openstack-config --set /etc/cinder/cinder.conf DEFAULT sql_connection postgresql://$cinderdbuser:$cinderdbpass@$dbbackendhost:$psqldbport/$cinderdbname
 	openstack-config --set /etc/cinder/cinder.conf database connection postgresql://$cinderdbuser:$cinderdbpass@$dbbackendhost:$psqldbport/$cinderdbname
 	;;
 esac
@@ -213,6 +208,4 @@ echo "Listo"
 echo ""
 echo "Cinder Instalado"
 echo ""
-
-
 

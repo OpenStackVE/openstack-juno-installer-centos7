@@ -1,5 +1,5 @@
 Version del instalador:
 
-0.0.4.beta.el7 "Shadow Cat"
+1.0.0.rc1.el7 "Shadow Cat"
 
 SOLO PARA OPENSTACK JUNO !!!

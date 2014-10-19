@@ -107,11 +107,9 @@ openstack-config --set /etc/keystone/keystone.conf DEFAULT use_syslog False
 
 case $dbflavor in
 "mysql")
-	# openstack-config --set /etc/keystone/keystone.conf sql connection mysql://$keystonedbuser:$keystonedbpass@$dbbackendhost:$mysqldbport/$keystonedbname
 	openstack-config --set /etc/keystone/keystone.conf database connection mysql://$keystonedbuser:$keystonedbpass@$dbbackendhost:$mysqldbport/$keystonedbname
 	;;
 "postgres")
-	# openstack-config --set /etc/keystone/keystone.conf sql connection postgresql://$keystonedbuser:$keystonedbpass@$dbbackendhost:$psqldbport/$keystonedbname
 	openstack-config --set /etc/keystone/keystone.conf database connection postgresql://$keystonedbuser:$keystonedbpass@$dbbackendhost:$psqldbport/$keystonedbname
 	;;
 esac
@@ -121,16 +119,6 @@ openstack-config --set /etc/keystone/keystone.conf catalog driver keystone.catal
 openstack-config --set /etc/keystone/keystone.conf token provider keystone.token.providers.pki.Provider
 openstack-config --set /etc/keystone/keystone.conf token expiration 86400
 openstack-config --set /etc/keystone/keystone.conf token driver keystone.token.backends.sql.Token
-
-# openstack-config --set /etc/keystone/keystone.conf auth methods external,password,token,oauth1
-# openstack-config --set /etc/keystone/keystone.conf auth password keystone.auth.plugins.password.Password
-# openstack-config --set /etc/keystone/keystone.conf auth token keystone.auth.plugins.token.Token
-# openstack-config --set /etc/keystone/keystone.conf auth oauth1 keystone.auth.plugins.oauth1.OAuth
-
-# if [ $ceilometerinstall == yes ]
-# then
-# 	openstack-config --set /etc/keystone/keystone.conf publisher_rpc metering_secret $SERVICE_TOKEN
-# fi
 
 keystone-manage pki_setup --keystone-user keystone --keystone-group keystone
 
@@ -147,8 +135,6 @@ echo "Activando Servicios de Keystone"
 service openstack-keystone start
 chkconfig openstack-keystone on
 
-# systemctl enable openstack-keystone.service
-# systemctl start openstack-keystone.service
 
 echo "Listo"
 
@@ -222,7 +208,6 @@ SERVICE_ENDPOINT="http://$keystonehost:35357/v2.0"
 OS_USERNAME=$keystoneadminuser
 OS_TENANT_NAME=$keystoneadminuser
 OS_PASSWORD=$keystoneadminpass
-# OS_AUTH_URL="http://$keystonehost:35357/v2.0/"
 OS_AUTH_URL="http://$keystonehost:5000/v2.0/"
 
 echo "# export SERVICE_ENDPOINT=$SERVICE_ENDPOINT" > $keystone_admin_rc_file

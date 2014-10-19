@@ -113,7 +113,6 @@ openstack-config --set /etc/ceilometer/ceilometer.conf keystone_authtoken auth_p
 openstack-config --set /etc/ceilometer/ceilometer.conf keystone_authtoken admin_tenant_name $keystoneservicestenant
 openstack-config --set /etc/ceilometer/ceilometer.conf keystone_authtoken admin_user $ceilometeruser
 openstack-config --set /etc/ceilometer/ceilometer.conf keystone_authtoken admin_password $ceilometerpass
-# openstack-config --set /etc/ceilometer/ceilometer.conf keystone_authtoken auth_uri http://$keystonehost:5000/
 openstack-config --set /etc/ceilometer/ceilometer.conf keystone_authtoken auth_uri http://$keystonehost:5000/v2.0
 openstack-config --set /etc/ceilometer/ceilometer.conf keystone_authtoken identity_uri http://$keystonehost:35357
 
@@ -128,7 +127,6 @@ openstack-config --set /etc/ceilometer/ceilometer.conf service_credentials os_pa
 openstack-config --set /etc/ceilometer/ceilometer.conf service_credentials os_tenant_name $keystoneservicestenant
 openstack-config --set /etc/ceilometer/ceilometer.conf service_credentials os_auth_url http://$keystonehost:5000/v2.0/
 openstack-config --set /etc/ceilometer/ceilometer.conf service_credentials os_region_name $endpointsregion
-# openstack-config --set /etc/ceilometer/ceilometer.conf service_credentials os_endpoint_type publicURL
 openstack-config --set /etc/ceilometer/ceilometer.conf service_credentials os_endpoint_type internalURL
 
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT metering_api_port 8777
@@ -158,10 +156,7 @@ fi
 
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT debug false
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT verbose false
-# openstack-config --set /etc/ceilometer/ceilometer.conf database connection "mongodb://$mondbhost:$mondbport/$mondbname"
 openstack-config --set /etc/ceilometer/ceilometer.conf database connection "mongodb://$mondbuser:$mondbpass@$mondbhost:$mondbport/$mondbname"
-# openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT metering_secret $metering_secret
-# openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT metering_secret $SERVICE_TOKEN
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT log_dir /var/log/ceilometer
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT notification_topics notifications,glance_notifications
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT policy_file policy.json
@@ -203,15 +198,14 @@ openstack-config --set /etc/ceilometer/ceilometer.conf alarm evaluation_interval
 openstack-config --set /etc/ceilometer/ceilometer.conf alarm record_history True
 openstack-config --set /etc/ceilometer/ceilometer.conf api port 8777
 openstack-config --set /etc/ceilometer/ceilometer.conf api host 0.0.0.0
+#
 
-
-# Agregado Julio 17 2014
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT heat_control_exchange heat
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT control_exchange ceilometer
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT http_control_exchanges nova
 sed -r -i 's/http_control_exchanges\ =\ nova/http_control_exchanges=nova\nhttp_control_exchanges=glance\nhttp_control_exchanges=cinder\nhttp_control_exchanges=neutron\n/' /etc/ceilometer/ceilometer.conf
 openstack-config --set /etc/ceilometer/ceilometer.conf publisher_rpc metering_topic metering
-openstack-config --set /etc/ceilometer/ceilometer.conf rpc_notifier2 topics notifications
+openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT notification_topics
 
 echo ""
 echo "Aplicando reglas de IPTABLES"
@@ -278,6 +272,4 @@ fi
 echo ""
 echo "Ceilometer Instalado"
 echo ""
-
-
 

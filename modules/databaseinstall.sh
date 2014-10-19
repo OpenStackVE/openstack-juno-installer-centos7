@@ -46,9 +46,6 @@ then
 	"mysql")
 		echo "Preparando manejador de Base de Datos MariaDB local"
 		rm /root/.my.cnf
-		# A partir de ICEHOUSE empezamos a usar MariaDB
-		#
-		# yum -y install mysql-server
 		yum -y erase mysql
 		yum -y install mariadb-galera-server mariadb-galera-common mariadb-galera galera
 		# Parche para SAHARA
@@ -100,7 +97,6 @@ if [ $dbinstall == "yes" ]
 then
 	case $dbflavor in
 	"mysql")
-		# testmysql=`rpm -qi mysql-server|grep -ci "is not installed"`
 		testmysql=`rpm -qi mariadb-galera-server|grep -ci "is not installed"`
 		if [ $testmysql == "1" ]
 		then

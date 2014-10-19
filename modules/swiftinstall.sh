@@ -142,8 +142,6 @@ echo ""
 echo "Configurando Swift"
 echo ""
 
-# mkdir -p /var/lib/keystone-signing-swift
-# chown swift:swift /var/lib/keystone-signing-swift
 
 openstack-config --set /etc/swift/swift.conf swift-hash swift_hash_path_suffix $(openssl rand -hex 10)
 # Ya no se necesita ???... esperando confirmación...
@@ -180,7 +178,6 @@ chkconfig openstack-swift-object on
 
 openstack-config --set /etc/swift/proxy-server.conf DEFAULT bind_port 8080
 openstack-config --set /etc/swift/proxy-server.conf DEFAULT workers $swiftworkers
-# openstack-config --set /etc/swift/proxy-server.conf "pipeline:main" pipeline "healthcheck cache authtoken keystoneauth proxy-server"
 openstack-config --set /etc/swift/proxy-server.conf "pipeline:main" pipeline "catch_errors gatekeeper healthcheck proxy-logging cache authtoken keystoneauth proxy-logging proxy-server"
 openstack-config --set /etc/swift/proxy-server.conf "app:proxy-server" use "egg:swift#proxy"
 openstack-config --set /etc/swift/proxy-server.conf "app:proxy-server" allow_account_management true
@@ -188,7 +185,6 @@ openstack-config --set /etc/swift/proxy-server.conf "app:proxy-server" account_a
 openstack-config --set /etc/swift/proxy-server.conf "filter:keystoneauth" use "egg:swift#keystoneauth"
 openstack-config --set /etc/swift/proxy-server.conf "filter:keystoneauth" operator_roles "Member,admin,swiftoperator"
 openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" paste.filter_factory "keystoneclient.middleware.auth_token:filter_factory"
-# openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" paste.filter_factory "keystonemiddleware.auth_token:filter_factory"
 openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" delay_auth_decision true
 openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" admin_token $SERVICE_TOKEN
 openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" auth_token $SERVICE_TOKEN
@@ -199,7 +195,6 @@ openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" auth_host
 openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" auth_port 35357
 openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" auth_protocol http
 openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" auth_uri http://$keystonehost:5000
-# openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" signing_dir /var/lib/keystone-signing-swift
 openstack-config --set /etc/swift/proxy-server.conf "filter:authtoken" signing_dir /tmp/keystone-signing-swift
 openstack-config --set /etc/swift/proxy-server.conf "filter:cache" use "egg:swift#memcache"
 openstack-config --set /etc/swift/proxy-server.conf "filter:catch_errors" use "egg:swift#catch_errors"
@@ -215,9 +210,6 @@ chown -R swift:swift /var/lib/keystone-signing-swift
 if [ $ceilometerinstall == "yes" ]
 then
 	openstack-config --set /etc/swift/proxy-server.conf filter:ceilometer use "egg:ceilometer#swift"
-	# El manual dice que hay que hacer el siguiente paso. Pero esto previene que el proxy funcione.
-	# Se deja comentado hasta investigar mas al respecto.
-	# openstack-config --set /etc/swift/proxy-server.conf pipeline:main pipeline "healthcheck cache authtoken keystoneauth ceilometer proxy-server"
 fi
 
 service memcached start
@@ -268,9 +260,4 @@ fi
 echo ""
 echo "Instalación básica de SWIFT terminada"
 echo ""
-
-
-
-
-
 

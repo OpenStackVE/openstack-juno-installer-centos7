@@ -81,30 +81,16 @@ echo ""
 echo "Configurando Heat"
 echo ""
 
-# Temporal - aparentemente el paquete no instala el api-paste.ini
-
-# cat ./libs/heat/api-paste.ini > /etc/heat/api-paste.ini
 
 chown -R heat.heat /etc/heat
 
-# openstack-config --set /etc/heat/api-paste.ini "filter:authtoken" paste.filter_factory "heat.common.auth_token:filter_factory"
-# openstack-config --set /etc/heat/api-paste.ini "filter:authtoken" auth_host $keystonehost
-# openstack-config --set /etc/heat/api-paste.ini "filter:authtoken" auth_port 35357
-# openstack-config --set /etc/heat/api-paste.ini "filter:authtoken" auth_protocol http
-# openstack-config --set /etc/heat/api-paste.ini "filter:authtoken" admin_tenant_name $keystoneservicestenant
-# openstack-config --set /etc/heat/api-paste.ini "filter:authtoken" admin_user $heatuser
-# openstack-config --set /etc/heat/api-paste.ini "filter:authtoken" admin_password $heatpass
-
-# echo "# Heat Main Config" >> /etc/heat/heat.conf
 
 case $dbflavor in
 "mysql")
 	openstack-config --set /etc/heat/heat.conf database connection mysql://$heatdbuser:$heatdbpass@$dbbackendhost:$mysqldbport/$heatdbname
-	# openstack-config --set /etc/heat/heat.conf DEFAULT sql_connection mysql://$heatdbuser:$heatdbpass@$dbbackendhost:$mysqldbport/$heatdbname
 	;;
 "postgres")
 	openstack-config --set /etc/heat/heat.conf database connection postgresql://$heatdbuser:$heatdbpass@$dbbackendhost:$psqldbport/$heatdbname
-	# openstack-config --set /etc/heat/heat.conf DEFAULT sql_connection postgresql://$heatdbuser:$heatdbpass@$dbbackendhost:$psqldbport/$heatdbname
 	;;
 esac
 
@@ -214,6 +200,4 @@ fi
 echo ""
 echo "Heat Instalado"
 echo ""
-
-
 

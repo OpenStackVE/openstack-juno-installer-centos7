@@ -145,11 +145,7 @@ openstack-config --set /etc/neutron/neutron.conf DEFAULT verbose False
 openstack-config --set /etc/neutron/neutron.conf DEFAULT log_dir /var/log/neutron
 openstack-config --set /etc/neutron/neutron.conf DEFAULT bind_host 0.0.0.0
 openstack-config --set /etc/neutron/neutron.conf DEFAULT bind_port 9696
-#
-# openstack-config --set /etc/neutron/neutron.conf DEFAULT core_plugin neutron.plugins.openvswitch.ovs_neutron_plugin.OVSNeutronPluginV2
-# ML2
 openstack-config --set /etc/neutron/neutron.conf DEFAULT core_plugin ml2
-#
 openstack-config --set /etc/neutron/neutron.conf DEFAULT auth_strategy keystone
 openstack-config --set /etc/neutron/neutron.conf DEFAULT base_mac "$basemacspec"
 openstack-config --set /etc/neutron/neutron.conf DEFAULT mac_generation_retries 16
@@ -178,12 +174,6 @@ case $brokerflavor in
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_heartbeat 60
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_protocol tcp
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_tcp_nodelay True
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_interval 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_interval_min 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_interval_max 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_timeout 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_limit 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect True
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT notification_driver neutron.openstack.common.notifier.rpc_notifier
 	;;
 
@@ -211,7 +201,6 @@ openstack-config --set /etc/neutron/neutron.conf keystone_authtoken admin_passwo
 openstack-config --set /etc/neutron/neutron.conf keystone_authtoken auth_port 35357
 openstack-config --set /etc/neutron/neutron.conf keystone_authtoken auth_protocol http
 openstack-config --set /etc/neutron/neutron.conf keystone_authtoken auth_uri http://$keystonehost:5000/v2.0
-# openstack-config --set /etc/neutron/neutron.conf keystone_authtoken auth_uri http://$keystonehost:5000
 openstack-config --set /etc/neutron/neutron.conf keystone_authtoken identity_uri http://$keystonehost:35357
 
 openstack-config --set /etc/neutron/neutron.conf DEFAULT agent_down_time 60
@@ -219,8 +208,6 @@ openstack-config --set /etc/neutron/neutron.conf DEFAULT router_scheduler_driver
 openstack-config --set /etc/neutron/neutron.conf DEFAULT dhcp_agents_per_network 1
 openstack-config --set /etc/neutron/neutron.conf DEFAULT dhcp_agent_notification True
 
-
-# Nuevo a partir de ICEHOUSE: - Válido aun en JUNO
 
 nova_admin_tenant_id=`keystone tenant-get $keystoneservicestenant|grep "id"|awk '{print $4}'`
 
@@ -231,23 +218,14 @@ openstack-config --set /etc/neutron/neutron.conf DEFAULT nova_region_name $endpo
 openstack-config --set /etc/neutron/neutron.conf DEFAULT nova_admin_username $novauser
 openstack-config --set /etc/neutron/neutron.conf DEFAULT nova_admin_tenant_id $nova_admin_tenant_id
 openstack-config --set /etc/neutron/neutron.conf DEFAULT nova_admin_password $novapass
-# openstack-config --set /etc/neutron/neutron.conf DEFAULT nova_admin_auth_url http://$keystonehost:5000/v2.0
 openstack-config --set /etc/neutron/neutron.conf DEFAULT nova_admin_auth_url http://$keystonehost:35357/v2.0
 openstack-config --set /etc/neutron/neutron.conf DEFAULT report_interval 20
 openstack-config --set /etc/neutron/neutron.conf DEFAULT notification_driver neutron.openstack.common.notifier.rpc_notifier
 openstack-config --set /etc/neutron/neutron.conf DEFAULT api_workers 0
 
 
-# Nuevo token de configuracion para el LBaaS
-# Sin embargo, parece no funcionar - se deja comentado hasta que funcione bien
-# openstack-config --set /etc/neutron/neutron.conf service_providers service_provider LOADBALANCER:Haproxy:neutron.services.loadbalancer.drivers.haproxy.plugin_driver.HaproxyOnHostPluginDriver:default
-# Mientras, se deja el anterior basado en "service_plugins"
-
-#
-# neutron.services.metering.metering_plugin.MeteringPlugin
 if [ $neutronmetering == "yes" ]
 then
-	# thirdplugin=",neutron.services.metering.metering_plugin.MeteringPlugin"
 	thirdplugin=",metering"
 else
 	thirdplugin=""
@@ -255,24 +233,15 @@ fi
 
 if [ $vpnaasinstall == "yes" ]
 then
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT service_plugins "neutron.services.loadbalancer.plugin.LoadBalancerPlugin,neutron.services.firewall.fwaas_plugin.FirewallPlugin,neutron.services.vpn.plugin.VPNDriverPlugin$thirdplugin"
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT service_plugins "router,firewall,lbaas,vpnaas$thirdplugin"
 else
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT service_plugins "neutron.services.loadbalancer.plugin.LoadBalancerPlugin,neutron.services.firewall.fwaas_plugin.FirewallPlugin$thirdplugin"
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT service_plugins "router,firewall,lbaas$thirdplugin"
 fi
-
-# NUEVO: Firewal As A Service
-
-# openstack-config --set /etc/neutron/neutron.conf fwaas driver  "neutron.services.firewall.drivers.linux.iptables_fwaas.IptablesFwaasDriver"
-# openstack-config --set /etc/neutron/neutron.conf fwaas enabled True
 
 echo "#" >> /etc/neutron/fwaas_driver.ini
 
 openstack-config --set /etc/neutron/fwaas_driver.ini fwaas driver "neutron.services.firewall.drivers.linux.iptables_fwaas.IptablesFwaasDriver"
 openstack-config --set /etc/neutron/fwaas_driver.ini fwaas enabled True
-
-# NUEVO A PARTIR DE HAVANA: VPN As A Service
 
 if [ $vpnaasinstall == "yes" ]
 then
@@ -340,23 +309,17 @@ sync
 sleep 2
 sync
 
-# openstack-config --set /etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini database sql_max_retries 10
-# openstack-config --set /etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini database reconnect_interval 2
-
 case $dbflavor in
 "mysql")
-	# openstack-config --set /etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini database sql_connection mysql://$neutrondbuser:$neutrondbpass@$dbbackendhost:$mysqldbport/$neutrondbname
 	openstack-config --set /etc/neutron/neutron.conf database connection mysql://$neutrondbuser:$neutrondbpass@$dbbackendhost:$mysqldbport/$neutrondbname
 	;;
 "postgres")
-	# openstack-config --set /etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini database sql_connection postgresql://$neutrondbuser:$neutrondbpass@$dbbackendhost:$psqldbport/$neutrondbname
 	openstack-config --set /etc/neutron/neutron.conf database connection postgresql://$neutrondbuser:$neutrondbpass@$dbbackendhost:$psqldbport/$neutrondbname
 	;;
 esac
 
 openstack-config --set /etc/neutron/neutron.conf database retry_interval 10
 openstack-config --set /etc/neutron/neutron.conf database idle_timeout 3600
-
 
 #
 # ML2
@@ -401,7 +364,6 @@ fi
 
 echo "#" >> /etc/neutron/metadata_agent.ini
 
-# openstack-config --set /etc/neutron/api-paste.ini filter:authtoken paste.filter_factory "keystoneclient.middleware.auth_token:filter_factory"
 openstack-config --set /etc/neutron/api-paste.ini filter:authtoken paste.filter_factory "keystonemiddleware.auth_token:filter_factory"
 openstack-config --set /etc/neutron/api-paste.ini filter:authtoken auth_protocol http
 openstack-config --set /etc/neutron/api-paste.ini filter:authtoken auth_host $keystonehost
@@ -410,7 +372,6 @@ openstack-config --set /etc/neutron/api-paste.ini filter:authtoken admin_user $n
 openstack-config --set /etc/neutron/api-paste.ini filter:authtoken admin_password $neutronpass
 openstack-config --set /etc/neutron/api-paste.ini filter:authtoken auth_port 35357
 openstack-config --set /etc/neutron/api-paste.ini filter:authtoken auth_uri http://$keystonehost:5000/v2.0/
-# openstack-config --set /etc/neutron/api-paste.ini filter:authtoken auth_uri http://$keystonehost:5000
 openstack-config --set /etc/neutron/api-paste.ini filter:authtoken identity_uri http://$keystonehost:35357
 
 openstack-config --set /etc/neutron/metadata_agent.ini DEFAULT debug False
@@ -446,9 +407,6 @@ cp -v /etc/neutron/lbaas_agent.ini /etc/neutron/plugins/services/agent_loadbalan
 chown root.neutron /etc/neutron/plugins/services/agent_loadbalancer/lbaas_agent.ini
 sync
 
-# neutron-dhcp-setup --plugin openvswitch --qhost $neutronhost
-# neutron-l3-setup --plugin openvswitch --qhost $neutronhost
-
 sync
 sleep 5
 sync
@@ -463,12 +421,6 @@ case $brokerflavor in
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_heartbeat 60
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_protocol tcp
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_tcp_nodelay True
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_interval 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_interval_min 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_interval_max 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_timeout 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect_limit 0
-	# openstack-config --set /etc/neutron/neutron.conf DEFAULT qpid_reconnect True
 	openstack-config --set /etc/neutron/neutron.conf DEFAULT notification_driver neutron.openstack.common.notifier.rpc_notifier
 	;;
 
@@ -487,7 +439,6 @@ case $brokerflavor in
 	;;
 esac
 
-#
 
 sync
 sleep 2

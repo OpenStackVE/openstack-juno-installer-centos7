@@ -1,3 +1,11 @@
+1.0.0.rc1.el7 - 19-Oct-2014
+- Primer RC basado en los paquetes RC1/RC2/RC3
+  en el repositorio RDO.
+- Limpieza general de las configuraciones y
+  adaptación de items "deprecados" a sus nuevas
+  versiones en todos los módulos donde fue
+  necesario hacer los cambios.
+
 0.0.4.beta.el7 - 15-Oct-2014
 - Se agrega autenticación y se refuerza la
   seguridad entre MongoDB y Ceilometer.

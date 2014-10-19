@@ -36,26 +36,6 @@ internalbridgeinterface=`ifconfig $integration_bridge|grep -c $integration_bridg
 internalbridgepresent=`ovs-vsctl show|grep -i -c bridge.\*$integration_bridge`
 oskernelinstalled=`uname -r|grep -c x86_64`
 
-# case $dbflavor in
-# postgres)
-#	echo "ALERTA ! ALERTA ! ALERTA !"
-#	echo "Desactivando SELINUX"
-#	echo "El uso de POSTGRES como Backend es incompatible con SELINUX en modo"
-#	echo "enforcing en OpenStack"
-#	echo ""
-#	setenforce 0
-#	sed -r -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
-#	setenforce 0
-#	sleep 10
-#	;;
-#mysql)
-#	echo ""
-#	setenforce 1
-#	sed -r -i 's/SELINUX=disabled/SELINUX=enforcing/g' /etc/selinux/config
-#	sed -r -i 's/SELINUX=permissive/SELINUX=enforcing/g' /etc/selinux/config
-#	;;
-#esac
-
 echo ""
 echo "NOTA: Desactivando SELINUX - Bug existente con NOVA-API"
 echo ""
@@ -272,7 +252,4 @@ else
 	service iptables restart
 	date > /etc/openstack-control-script-config/libvirt-installed
 fi
-
-
-
 

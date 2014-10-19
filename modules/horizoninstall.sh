@@ -75,8 +75,6 @@ echo "Configurando el Dashboard"
 mkdir -p /etc/openstack-dashboard
 cp /etc/openstack-dashboard/local_settings /etc/openstack-dashboard/local_settings.ORIGINAL-CENTOS7
 cat ./libs/local_settings >  /etc/openstack-dashboard/local_settings
-# cat ./libs/openstack-dashboard.conf > /etc/httpd/conf.d/openstack-dashboard.conf
-# cat ./libs/rootredirect.conf > /etc/httpd/conf.d/rootredirect.conf
 
 mkdir /var/log/horizon
 chown -R apache.apache /var/log/horizon
@@ -219,6 +217,4 @@ echo "de las interfaces de este equipo para poder iniciar el dashboard"
 echo "Use la cuenta administrativa principal del Keystone"
 echo "Cuenta: $keystoneadminuser"
 echo ""
-
-
 
