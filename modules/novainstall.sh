@@ -184,6 +184,7 @@ openstack-config --set /etc/nova/nova.conf DEFAULT iscsi_helper tgtadm
 openstack-config --set /etc/nova/nova.conf DEFAULT vif_plugging_timeout 10
 openstack-config --set /etc/nova/nova.conf DEFAULT vif_plugging_is_fatal False
 openstack-config --set /etc/nova/nova.conf DEFAULT control_exchange nova
+openstack-config --set /etc/nova/nova.conf DEFAULT host `hostname`
 
 #
 # Base de datos

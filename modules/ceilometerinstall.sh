@@ -133,7 +133,11 @@ openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT metering_api_port
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT auth_strategy keystone
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT logdir /var/log/ceilometer
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT os_auth_region $endpointsregion
-openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT host $ceilometerhost
+openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT host `hostname`
+openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT pipeline_cfg_file pipeline.yaml
+openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT collector_workers 2
+openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT notification_workers 2
+openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT hypervisor_inspector libvirt
 
 openstack-config --del /etc/ceilometer/ceilometer.conf DEFAULT sql_connection
 openstack-config --del /etc/ceilometer/ceilometer.conf DEFAULT sql_connection
@@ -206,6 +210,8 @@ openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT http_control_exch
 sed -r -i 's/http_control_exchanges\ =\ nova/http_control_exchanges=nova\nhttp_control_exchanges=glance\nhttp_control_exchanges=cinder\nhttp_control_exchanges=neutron\n/' /etc/ceilometer/ceilometer.conf
 openstack-config --set /etc/ceilometer/ceilometer.conf publisher_rpc metering_topic metering
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT notification_topics
+
+usermod -G qemu,kvm,nova ceilometer
 
 echo ""
 echo "Aplicando reglas de IPTABLES"

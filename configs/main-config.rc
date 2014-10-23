@@ -6,8 +6,8 @@
 # Octubre del 2014
 #
 # Archivo de configuracion principal
-# Para el instalador versión 1.0.0.rc1.el7 "Shadow Cat"
-# Octubre 19, 2014
+# Para el instalador versión 1.0.1.el7 "Shadow Cat"
+# Octubre 22, 2014
 #
 
 #
@@ -434,7 +434,8 @@ mondbuser="ceilometer"
 # Use un pass con ascii básico y números.. Please !!
 mondbpass="C3iL0m3T3r-Op3nStaCk"
 # Password del servicio de metering
-metering_secret="P@ssw0rd"
+# Regenerarlo con el comando: openssl rand -hex 10
+metering_secret="fe01a6ed3e04c4be1cd8"
 #
 # Si se va a instalar el módulo de alarmas, colocar
 # la siguiente variable en "yes"

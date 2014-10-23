@@ -1,3 +1,9 @@
+1.0.1.el7 - 22-Oct-2014
+- RELEASE!!!!. Primera versión de producción
+  basada en paquetes ya oficiales en RDO.
+- Correcciones menores para metricas de CPU,
+  disco y red entre Nova-Computer y Ceilometer.
+
 1.0.0.rc1.el7 - 19-Oct-2014
 - Primer RC basado en los paquetes RC1/RC2/RC3
   en el repositorio RDO.
