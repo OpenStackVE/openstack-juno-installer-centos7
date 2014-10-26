@@ -9,8 +9,8 @@
 # Primera versión para Juno (centos): Octubre 12 del 2014
 #
 # Script principal
-# Versión 1.0.1.el7 "Shadow Cat"
-# 22 de Octubre del 2014
+# Versión 1.0.2.el7 "Shadow Cat"
+# 26 de Octubre del 2014
 #
 
 PATH=$PATH:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
@@ -42,7 +42,7 @@ case $1 in
 	echo "Para releases 7.0 en adelante"
 	echo "Realizado por Reynaldo R. Martinez P."
 	echo "E-Mail: TigerLinux@Gmail.com"
-	echo "Versión 1.0.1.el7 \"Shadow Cat\" - Octubre 22, 2014"
+	echo "Versión 1.0.2.el7 \"Shadow Cat\" - Octubre 26, 2014"
 	echo ""
 	echo "Se verificaran los prerequisitos"
 	echo "Si alguno de los prerequisitos falla, se informará y se detendrá el proceso"

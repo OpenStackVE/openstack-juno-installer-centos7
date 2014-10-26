@@ -109,12 +109,21 @@ compute), la siguiente variable del archivo de configuración debe estar en
 nova_without_compute="no"
 ```
 
+Si usa ceilometer en el controller, y de la misma manera el controller incluye
+el servicio de compute, la siguiente variable debe estar en "no":
+
+```bash
+ceilometer_without_compute="no"
+```
+
 En cambio, si va a instalar un controlador "puro" (sin servicio de compute)
-coloque la variable en "yes":
+coloque las variables en "yes":
 
 ```bash
 nova_without_compute="yes"
+ceilometer_without_compute="yes"
 ```
+
 
 **Nodos de compute:** Para los nodos de compute, debe dejar en "yes" sólo las
 variables de instalación de los módulos de nova y neutron. El resto de los
@@ -127,13 +136,20 @@ nova_in_compute_node="yes"
 neutron_in_compute_node="yes"
 ```
 
+Y si está usando ceilometer también la siguiente variable debe estar en "yes" para
+los nodos de compute:
+
+```bash
+ceilometer_in_compute_node="yes"
+```
+
 Debe colocar las IP's de los servicios de neutron, keystone, glance y cinder
 según la que tiene el controlador (incluyendo las Ip's del backend de Base de
 Datos). En cambio, las siguientes variables deben ser colocadas a la IP del
 nodo de compute:
 
 ```bash
-novahost="IP del Nova Compute Host"
+novahost="IP del Controlador"
 glancehost="IP del Controlador"
 cinderhost="IP del controlador"
 neutronhost="IP del controlador"
@@ -141,6 +157,12 @@ keystonehost="IP del controlador"
 messagebrokerhost="IP del controlador"
 dbbackendhost="IP del controlador o del backend de base de datos"
 vncserver_controller_address | spiceserver_controller_address = "IP del controlador"
+```
+
+Si usa ceilometer, se aplica el mismo caso:
+
+```bash
+ceilometerhost="IP del Controlador"
 ```
 
 Adicionalmente, debe colocar las siguientes variables con la IP del nodo de compute:

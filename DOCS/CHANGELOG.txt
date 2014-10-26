@@ -1,3 +1,8 @@
+1.0.2.el7 - 26-Oct-2014
+- Mejoras para instalación de ceilometer en
+  distintas configuraciones de nodos de con-
+  trolador o compute.
+
 1.0.1.el7 - 22-Oct-2014
 - RELEASE!!!!. Primera versión de producción
   basada en paquetes ya oficiales en RDO.

@@ -62,8 +62,11 @@ fi
 echo ""
 echo "Instalando paquetes para Nova"
 
-if [ $nova_in_compute_node = "no" ]
+if [ $nova_in_compute_node == "no" ]
 then
+	echo ""
+	echo "Nova en Controller o ALL-IN-ONE"
+	echo ""
 	yum install -y openstack-nova-novncproxy \
 		openstack-nova-compute \
 		openstack-nova-common \
@@ -76,6 +79,9 @@ then
 		openstack-utils \
 		openstack-selinux
 else
+	echo ""
+	echo "Nova en nodo de COMPUTE"
+	echo ""
 	yum install -y openstack-nova-compute \
 		openstack-nova-common \
 		python-cinderclient \
@@ -124,7 +130,7 @@ echo ""
 
 echo "Configurando NOVA"
 
-if [ $nova_in_compute_node = "no" ]
+if [ $nova_in_compute_node == "no" ]
 then
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken paste.filter_factory "keystonemiddleware.auth_token:filter_factory"
 	openstack-config --set /etc/nova/api-paste.ini filter:authtoken auth_protocol http
@@ -374,7 +380,7 @@ echo "Listo"
 
 echo "Activando Servicios de Nova"
 
-if [ $nova_in_compute_node = "no" ]
+if [ $nova_in_compute_node == "no" ]
 then
 	service openstack-nova-api start
 	chkconfig openstack-nova-api on
@@ -394,7 +400,7 @@ then
 	service $consolesvc start
 	chkconfig $consolesvc on
 
-	if [ $nova_without_compute = "no" ]
+	if [ $nova_without_compute == "no" ]
 	then
 		service openstack-nova-compute start
 		chkconfig openstack-nova-compute on
@@ -424,7 +430,7 @@ echo ""
 echo "Continuando la instalación"
 echo ""
 
-if [ $nova_in_compute_node = "no" ]
+if [ $nova_in_compute_node == "no" ]
 then
 	if [ $vm_default_access == "yes" ]
 	then
@@ -467,13 +473,13 @@ else
 	date > /etc/openstack-control-script-config/nova-installed
 	date > /etc/openstack-control-script-config/nova
 	echo "$consolesvc" > /etc/openstack-control-script-config/nova-console-svc
-	if [ $nova_in_compute_node = "no" ]
+	if [ $nova_in_compute_node == "no" ]
 	then
 		date > /etc/openstack-control-script-config/nova-full-installed
 	fi
-	if [ $nova_without_compute = "yes" ]
+	if [ $nova_without_compute == "yes" ]
 	then
-		if [ $nova_in_compute_node = "no" ]
+		if [ $nova_in_compute_node == "no" ]
 		then
 			date > /etc/openstack-control-script-config/nova-without-compute
 		fi

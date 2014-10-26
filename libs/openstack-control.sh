@@ -138,15 +138,34 @@ else
 	alarm2=""
 fi
 
-ceilometer_svc_start="
-	openstack-ceilometer-compute
-	openstack-ceilometer-central
-	openstack-ceilometer-api
-	openstack-ceilometer-collector
-	openstack-ceilometer-notification
-	$alarm1
-	$alarm2
-"
+if [ -f /etc/openstack-control-script-config/ceilometer-full-installed ]
+then
+	if [ -f /etc/openstack-control-script-config/ceilometer-without-compute ]
+	then
+		ceilometer_svc_start="
+			openstack-ceilometer-central
+			openstack-ceilometer-api
+			openstack-ceilometer-collector
+			openstack-ceilometer-notification
+			$alarm1
+			$alarm2
+		"
+	else
+		ceilometer_svc_start="
+			openstack-ceilometer-compute
+			openstack-ceilometer-central
+			openstack-ceilometer-api
+			openstack-ceilometer-collector
+			openstack-ceilometer-notification
+			$alarm1
+			$alarm2
+		"
+	fi
+else
+	ceilometer_svc_start="
+		openstack-ceilometer-compute
+	"
+fi
 
 
 
@@ -215,12 +234,6 @@ start)
 			service $i start
 			#sleep 1
 		done
-		#if [ -f /etc/openstack-control-script-config/neutron-full-installed ]
-		#then
-		#	sleep 5
-		#	service neutron-l3-agent restart
-		#	service neutron-dhcp-agent restart
-		#fi
 	fi
 
 	if [ -f /etc/openstack-control-script-config/nova ]
