@@ -1,3 +1,10 @@
+1.0.3.el7 - 26-Nov-2014
+- Se incluye la opción de seleccionar el tipo
+  de proveedor de token para Keystone (pki o
+  uuid).
+- Corrección menor en módulo de instalación de
+  keystone.
+
 1.0.2.el7 - 26-Oct-2014
 - Mejoras para instalación de ceilometer en
   distintas configuraciones de nodos de con-
