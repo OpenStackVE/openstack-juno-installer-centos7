@@ -360,7 +360,7 @@ then
 	service libvirtd restart
 	echo ""
 else
-	openstack-config --set /etc/nova/nova.conf libvirt cpu_model $libvirt_cpu_mode
+	openstack-config --set /etc/nova/nova.conf libvirt cpu_mode $libvirt_cpu_mode
 fi
 
 sync

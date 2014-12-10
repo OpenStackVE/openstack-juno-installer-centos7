@@ -1,3 +1,7 @@
+1.0.4.el7 - 09-Dic-2014
+- Se corrige un BUG en la configuración del parámetro
+  "cpu_mode" en el módulo de instalación de Nova.
+
 1.0.3.el7 - 26-Nov-2014
 - Se incluye la opción de seleccionar el tipo
   de proveedor de token para Keystone (pki o
