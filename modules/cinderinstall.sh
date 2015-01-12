@@ -144,7 +144,12 @@ case $dbflavor in
 	;;
 esac
 
+openstack-config --set /etc/cinder/cinder.conf database retry_interval 10
 openstack-config --set /etc/cinder/cinder.conf database idle_timeout 3600
+openstack-config --set /etc/cinder/cinder.conf database min_pool_size 1
+openstack-config --set /etc/cinder/cinder.conf database max_pool_size 10
+openstack-config --set /etc/cinder/cinder.conf database max_retries 100
+openstack-config --set /etc/cinder/cinder.conf database pool_timeout 10
 
 openstack-config --set /etc/cinder/cinder.conf keystone_authtoken auth_host $keystonehost
 openstack-config --set /etc/cinder/cinder.conf keystone_authtoken admin_tenant_name $keystoneservicestenant

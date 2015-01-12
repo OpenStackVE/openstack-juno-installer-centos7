@@ -1,3 +1,7 @@
+1.0.5.el7 - 11-Ene-2015
+- Se incluyen settings para acceso a BD en los módulos
+  de keystone, glance, cinder, neutron, nova y heat.
+
 1.0.4.el7 - 09-Dic-2014
 - Se corrige un BUG en la configuración del parámetro
   "cpu_mode" en el módulo de instalación de Nova.

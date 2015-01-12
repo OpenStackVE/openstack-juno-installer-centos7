@@ -114,7 +114,13 @@ case $dbflavor in
 	;;
 esac
 
-openstack-config --set /etc/keystone/keystone.conf sql idle_timeout 200
+openstack-config --set /etc/keystone/keystone.conf database retry_interval 10
+openstack-config --set /etc/keystone/keystone.conf database idle_timeout 3600
+openstack-config --set /etc/keystone/keystone.conf database min_pool_size 1
+openstack-config --set /etc/keystone/keystone.conf database max_pool_size 10
+openstack-config --set /etc/keystone/keystone.conf database max_retries 100
+openstack-config --set /etc/keystone/keystone.conf database pool_timeout 10
+
 openstack-config --set /etc/keystone/keystone.conf catalog driver keystone.catalog.backends.sql.Catalog
 openstack-config --set /etc/keystone/keystone.conf token expiration 86400
 openstack-config --set /etc/keystone/keystone.conf token driver keystone.token.persistence.backends.sql.Token

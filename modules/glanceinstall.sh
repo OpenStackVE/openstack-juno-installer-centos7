@@ -102,7 +102,20 @@ esac
 
 glanceworkers=`grep processor.\*: /proc/cpuinfo |wc -l`
 
-openstack-config --set /etc/glance/glance-api.conf DEFAULT sql_idle_timeout 3600
+openstack-config --set /etc/glance/glance-api.conf database retry_interval 10
+openstack-config --set /etc/glance/glance-api.conf database idle_timeout 3600
+openstack-config --set /etc/glance/glance-api.conf database min_pool_size 1
+openstack-config --set /etc/glance/glance-api.conf database max_pool_size 10
+openstack-config --set /etc/glance/glance-api.conf database max_retries 100
+openstack-config --set /etc/glance/glance-api.conf database pool_timeout 10
+
+openstack-config --set /etc/glance/glance-registry.conf database retry_interval 10
+openstack-config --set /etc/glance/glance-registry.conf database idle_timeout 3600
+openstack-config --set /etc/glance/glance-registry.conf database min_pool_size 1
+openstack-config --set /etc/glance/glance-registry.conf database max_pool_size 10
+openstack-config --set /etc/glance/glance-registry.conf database max_retries 100
+openstack-config --set /etc/glance/glance-registry.conf database pool_timeout 10
+
 openstack-config --set /etc/glance/glance-api.conf DEFAULT workers $glanceworkers
 openstack-config --set /etc/glance/glance-api.conf DEFAULT registry_host 0.0.0.0
 openstack-config --set /etc/glance/glance-api.conf DEFAULT registry_port 9191

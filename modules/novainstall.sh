@@ -205,6 +205,13 @@ case $dbflavor in
 	;;
 esac
 
+openstack-config --set /etc/nova/nova.conf database retry_interval 10
+openstack-config --set /etc/nova/nova.conf database idle_timeout 3600
+openstack-config --set /etc/nova/nova.conf database min_pool_size 1
+openstack-config --set /etc/nova/nova.conf database max_pool_size 10
+openstack-config --set /etc/nova/nova.conf database max_retries 100
+openstack-config --set /etc/nova/nova.conf database pool_timeout 10
+
 #
 # Sigue configuración principal
 #
