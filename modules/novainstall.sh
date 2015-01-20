@@ -291,10 +291,10 @@ case $consoleflavor in
 "vnc")
 	openstack-config --set /etc/nova/nova.conf DEFAULT vnc_enabled True
 	openstack-config --set /etc/nova/nova.conf DEFAULT novncproxy_host 0.0.0.0
-	openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_proxyclient_address $novahost
+	openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_proxyclient_address $nova_computehost
 	openstack-config --set /etc/nova/nova.conf DEFAULT novncproxy_base_url "http://$vncserver_controller_address:6080/vnc_auto.html"
 	openstack-config --set /etc/nova/nova.conf DEFAULT novncproxy_port 6080
-	openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_listen $novahost
+	openstack-config --set /etc/nova/nova.conf DEFAULT vncserver_listen $nova_computehost
 	openstack-config --set /etc/nova/nova.conf DEFAULT vnc_keymap $vnc_keymap
 	openstack-config --del /etc/nova/nova.conf spice html5proxy_base_url
 	openstack-config --del /etc/nova/nova.conf spice server_listen
@@ -316,7 +316,7 @@ case $consoleflavor in
  
 	openstack-config --set /etc/nova/nova.conf spice html5proxy_base_url "http://$spiceserver_controller_address:6082/spice_auto.html"
 	openstack-config --set /etc/nova/nova.conf spice server_listen 0.0.0.0
-	openstack-config --set /etc/nova/nova.conf spice server_proxyclient_address $novahost
+	openstack-config --set /etc/nova/nova.conf spice server_proxyclient_address $nova_computehost
 	openstack-config --set /etc/nova/nova.conf spice enabled True
 	openstack-config --set /etc/nova/nova.conf spice agent_enabled True
 	openstack-config --set /etc/nova/nova.conf spice keymap en-us
