@@ -72,7 +72,7 @@ echo ""
 echo "Instalando software para monitoreo"
 echo ""
 
-yum -y install net-snmp-utils net-snmp net-snmp-libs virt-top
+yum -y install net-snmp-utils net-snmp net-snmp-libs virt-top bc
 
 cp -v ./libs/snmp/scripts/* /usr/local/bin/
 chmod a+x /usr/local/bin/*.sh

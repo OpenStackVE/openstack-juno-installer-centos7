@@ -1,3 +1,12 @@
+1.0.7.el6 - 16-Febrero-2015
+- Se eliminan variables SNMP/ZABBIX para conteo de CPU y
+  RAM usada por QEMU. Las variables han demostrado ser
+  inefectivas. Cuando se encuentre otro método viable y
+  rápido para obtener estas métricas, se incluirán de nuevo
+  las variables.
+- Se hacen mejoras en la secuencia de configuración de
+  libvirt.
+
 1.0.6.el7 - 19-Ene-2015
 - Se corrige un bug en los parámetros de VNC y SPICE en el
   módulo de instalación de nova.

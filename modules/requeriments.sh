@@ -250,6 +250,17 @@ else
 	service iptables start
 	service iptables save
 	service iptables restart
+
+	sed -i.ori 's/#listen_tls = 0/listen_tls = 0/g' /etc/libvirt/libvirtd.conf
+	sed -i 's/#listen_tcp = 1/listen_tcp = 1/g' /etc/libvirt/libvirtd.conf
+	sed -i 's/#auth_tcp = "sasl"/auth_tcp = "none"/g' /etc/libvirt/libvirtd.conf
+	sed -i.ori 's/#LIBVIRTD_ARGS="--listen"/LIBVIRTD_ARGS="--listen"/g' /etc/sysconfig/libvirtd
+
+	systemctl restart libvirtd
+	iptables -A INPUT -p tcp -m multiport --dports 22 -j ACCEPT
+	iptables -A INPUT -p tcp -m multiport --dports 16509 -j ACCEPT
+	service iptables save
+
 	date > /etc/openstack-control-script-config/libvirt-installed
 fi
 
