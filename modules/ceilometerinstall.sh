@@ -231,6 +231,12 @@ sed -r -i 's/http_control_exchanges\ =\ nova/http_control_exchanges=nova\nhttp_c
 openstack-config --set /etc/ceilometer/ceilometer.conf publisher_rpc metering_topic metering
 openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT notification_topics
 
+openstack-config --set /etc/ceilometer/ceilometer.conf DEFAULT instance_name_template $instance_name_template
+openstack-config --set /etc/ceilometer/ceilometer.conf service_types neutron network
+openstack-config --set /etc/ceilometer/ceilometer.conf service_types nova compute
+openstack-config --set /etc/ceilometer/ceilometer.conf service_types kwapi energy
+openstack-config --set /etc/ceilometer/ceilometer.conf service_types swift object-store
+
 usermod -G qemu,kvm,nova ceilometer
 
 echo ""
